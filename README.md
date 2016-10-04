@@ -1,6 +1,6 @@
 # CS573 - Dan Manzo
 
-<p>Dan Manzo is a programmer, pedagogue, and musician with interests in web applications, interactive media, serious games, information technology education, and multimedia performance. He is the founder of KnockOut Media and has authored numerous projects in these genres. He is currently pursuing a doctoral degree in Learning Sciences and Technologies at Worcester Polytechnic Institute where his primary research focuses on artificial intelligence, information systems, and interactive media used in educational environments.</p>
+Dan Manzo is a programmer, pedagogue, and musician with interests in web applications, interactive media, serious games, information technology education, and multimedia performance. He is the founder of KnockOut Media and has authored numerous projects in these genres. He is currently pursuing a doctoral degree in Learning Sciences and Technologies at Worcester Polytechnic Institute where his primary research focuses on artificial intelligence, information systems, and interactive media used in educational environments.
 
 # Assignments
 
