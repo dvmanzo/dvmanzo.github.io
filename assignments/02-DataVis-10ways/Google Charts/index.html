@@ -1,0 +1,55 @@
+<html>
+  <head>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawSeriesChart);
+
+    function drawSeriesChart() {
+		var allLinesArray;
+		var dataPoint=[];
+		$.ajax({
+			type: "GET",
+			url: "cars-sample.csv",
+			dataType: "text",
+			success: function (data) {
+				
+				
+				
+				
+				allLinesArray = data.split('\n');
+				for (var i = 0; i <= allLinesArray.length - 1; i++) {
+				var rowData = allLinesArray[i].split(',');
+				if(rowData && rowData.length > 1)
+					if(i==0)
+					dataPoint.push([rowData[0], rowData[7], rowData[3], rowData[2], rowData[7]]);
+					else
+					dataPoint.push([rowData[0], parseFloat(rowData[7])/10, parseFloat(rowData[3]), rowData[2], (parseInt(rowData[7])/1000)]);
+				}
+				
+      var data = google.visualization.arrayToDataTable(dataPoint);
+
+      var options = {
+        title: 'Google Charts Implementation',
+        hAxis: {title: 'Weight'},
+        vAxis: {title: 'MPG'},
+        bubble: {textStyle: {color: 'none', fontSize: 11}, opacity: 0.5},
+		legend: {position: 'none'},
+		vAxis: { ticks: [ {v: 0, f:''}, 10,20,30,40, {v: 50, f:''}] },
+		hAxis: { ticks: [ {v: 150, f:''}, 200,300,400,500, {v: 550, f:''}] }
+		
+      };
+
+      var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
+      chart.draw(data, options);
+				
+				}
+		});
+    }
+    </script>
+  </head>
+  <body>
+    <div id="series_chart_div" style="width: 1200px; height: 700px;"></div>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>amCharts examples</title>
+        <link rel="stylesheet" href="style.css" type="text/css">
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+        <script src="amcharts.js" type="text/javascript"></script>
+        <script src="xy.js" type="text/javascript"></script>
+
+        <script>
+        var chart;
+		var allLinesArray;
+		var dataPoint=[];
+		$.ajax({
+			type: "GET",
+			url: "cars-sample.csv",
+			dataType: "text",
+			success: function (data) {
+				
+				
+				
+				
+				allLinesArray = data.split('\n');
+				for (var i = 0; i <= allLinesArray.length - 1; i++) {
+				var rowData = allLinesArray[i].split(',');
+				if(rowData && rowData.length > 1)
+				{
+					if(i>0)
+					dataPoint.push({x: parseFloat(rowData[7])/10,
+									y: parseFloat(rowData[3]),
+									value: parseFloat(rowData[7])/1000,
+									color: rowData[2]});
+				}
+				}
+           		 var chartData = dataPoint;
+
+
+
+				var chart = AmCharts.makeChart("chartdiv", {
+				  "type": "xy",
+				  "dataProvider": chartData,
+				  "startDuration": 1.5,
+				  "graphs": [{
+					"balloonText": "x:<b>[[x]]</b> y:<b>[[y]]</b><br>value:<b>[[value]]</b>",
+					"bullet": "circle",
+					"bulletBorderAlpha": 0.2,
+					"bulletAlpha": 0.5,
+					"lineAlpha": 0,
+					"fillAlphas": 0,
+					"valueField": "value",
+					"xField": "x",
+					"yField": "y",
+					"colorField": "color",
+					"valueAxes": [{
+					  "tickLength": 10}]
+				  }]
+				});
+				
+				var xAxis = new AmCharts.ValueAxis();
+				xAxis.position = "left";
+				xAxis.title = "MPG";
+				xAxis.autoGridCount = true;
+				xAxis.labelFrequency = 2;
+				xAxis.showFirstLabel = true;
+				chart.addValueAxis(xAxis);
+				
+				var yAxis = new AmCharts.ValueAxis();
+				yAxis.position = "bottom";
+				yAxis.title = "Weight x 10";
+				yAxis.autoGridCount = true;
+				yAxis.labelFrequency = 1;
+				yAxis.showFirstLabel = false;
+				chart.addValueAxis(yAxis);    
+				chart.addTitle("AmChart Implementation");            
+
+			}
+		});
+        </script>
+    </head>
+
+    <body>
+        <div id="chartdiv" style="width: 600px; height: 400px;"></div>
+    </body>
+
+</html>

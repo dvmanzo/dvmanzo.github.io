@@ -1,0 +1,374 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+
+<style>
+</style>
+
+<body>
+  <h1 align='center'> Animated Transitions </h1>
+</body>
+
+<script>
+  var currentChart="bar";
+  var nextChart=null;
+  var dataPoint=[];
+  var colors=["#8db600", "#d1e231", "#ffa500", "#de3163", "#0000ff", "#FFE135", "#ffe5b4", "#fff700", "#fdbcb4", "#00ff00", "#FF8243", "#421C52", "#9DAE5C", "#ffec89", "#800080"];
+  var vis = d3.select('body').select('svg');
+  var width=1200;
+  var height=600;
+  var svg = d3.select("body")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+  
+  d3.csv('fruit.csv', function(err, d) {	
+  d.forEach(function (data, i)
+  {
+	dataPoint.push({Count: data['Count'], Fruit: data['Fruit'], Color: colors[i]});
+  });
+		svg.append("rect").attr('class', 'buttons').attr('x', 850).attr('y', 0).attr('width', 100).attr('height', 25).attr('fill', 'grey').attr('opacity', .75).on("click", function() {
+		nextChart = "bar";
+		switchChart();
+		});
+		svg.append("text").attr("x", 875).attr("y", 20).text("Bar");
+		
+		svg.append("rect").attr('class', 'buttons').attr('x', 960).attr('y', 0).attr('width', 100).attr('height', 25).attr('fill', 'grey').attr('opacity', .75).on("click", function() {
+		nextChart = "bubble";
+		switchChart();
+		});
+		svg.append("text").attr("x", 985).attr("y", 20).text("Bubble");
+		
+		svg.append("rect").attr('class', 'buttons').attr('x', 850).attr('y', 30).attr('width', 100).attr('height', 25).attr('fill', 'grey').attr('opacity', .75).on("click", function() {
+		nextChart = "pie";
+		switchChart();
+		});
+		svg.append("text").attr("x", 875).attr("y", 50).text("Pie");
+  
+	finishedLoading();
+  });
+  
+  
+  function finishedLoading()
+  {
+        var radius = Math.min(400, 400) / 2;
+				var arc = d3.svg.arc()
+				  .outerRadius(radius);
+		
+				var pie = d3.layout.pie()
+				  .value(function(d) { return d.Count; })
+				  .sort(null);
+
+				svg.selectAll('path')
+				  .data(pie(dataPoint))
+				  .enter()
+				  .append('path')
+				  .attr('class', 'pie')
+				  .attr('d', arc)
+				  .attr('fill', function(d, i) { 
+					return dataPoint[i]['Color'];
+				  })
+				  .attr('transform', 'translate(300, 300)')
+				  .attr('opacity', 0);	    
+
+	  
+	  dataPoint.forEach(function (data, i)
+	  {
+		svg.append("rect").attr('class', 'fruit').attr('x', 250+50*i).attr('y', 600-(parseInt(data['Count'])*20)).attr('width', 20).attr('height', parseInt(data['Count'])*20).attr('fill', data['Color']).attr('opacity', 1);
+  		svg.append("text").attr('class', 'label').attr("x", -200)
+        .attr("y", 240+50*i)
+		.attr("transform", "rotate(270, 200, 200)")
+        .text(data['Fruit']);		
+  		svg.append("text").attr('class', 'count').attr("x", parseInt(data['Count'])*20-220)
+        .attr("y", 265+50*i)
+		.attr("transform", "rotate(270, 200, 200)")
+        .text(data['Count']);	
+		svg.append("rect").attr('class', 'piesquares').attr('x', -100).attr('y', -100).attr('width', 10).attr('height', 10).attr('fill', data['Color']).attr('opacity', 1);
+	  });	
+	  
+  }
+  
+  function switchChart()
+  {
+	  if(currentChart==nextChart)
+	  return;
+	  
+	  switch(nextChart)
+	  {
+		  case "bar":
+		  	barChart();
+		  	break;
+		  
+		  case "pie":
+		  	if(currentChart=="bar")
+		  		barToPieChart();
+			else
+				bubbleToPieChart();
+		  	break;
+		  
+		  case "bubble":
+		  	if(currentChart=="bar")
+		  		barToBubbleChart();
+			else
+				pieToBubbleChart();
+		  	break;
+	  }
+	  currentChart=nextChart;
+  }
+
+  function bubbleToPieChart()
+  {
+	    var currentPositions = [];
+	  	svg.selectAll('.fruit').each(function(d,i) {			 
+			  currentPositions.push({x: d3.select(this).attr("x"), y: d3.select(this).attr("y")});
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("rx", 50)
+				.attr("ry", 0)
+				.attr("x", 600)
+				.attr("y", 200)
+				.attr("width",100)
+				.attr("height",100)
+				.attr("opacity", 0.0);			   
+		});
+	  	  svg.selectAll('.label').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 180)
+    		    .attr("y", 50+25*i)
+				.attr("transform", "rotate(0, 175, 175)")
+		});
+	  	  svg.selectAll('.count').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 150)
+    		    .attr("y", 50+25*i)
+				.text("("+dataPoint[i]["Count"]+")")
+				.attr("transform", "rotate(0, 175, 175)")
+		});
+	  	  svg.selectAll('.piesquares').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 130)
+    		    .attr("y", 40+25*i)
+		});
+	  	  svg.selectAll('.pie').each(function(d,i) {
+			  d3.select(this).transition()
+				.duration(300)
+				.attr('transform', 'translate('+currentPositions[i]["x"]+', 600)')
+				.attr('opacity', 0);
+		});
+	  	  svg.selectAll('.pie').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr('transform', 'translate(600, 300)')
+				.attr('opacity', 1);
+		});
+
+		
+  }
+  function barToPieChart()
+  {
+	    var currentPositions = [];
+	  	svg.selectAll('.fruit').each(function(d,i) {			 
+			  currentPositions.push({x: d3.select(this).attr("x"), y: d3.select(this).attr("y")});
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1500)
+				.attr("rx", 50)
+				.attr("ry", 0)
+				.attr("x", 600)
+				.attr("y", 200)
+				.attr("width",100)
+				.attr("height",100)
+				.attr("opacity", 1.0);	
+				
+				 d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("rx", 50)
+				.attr("ry", 0)
+				.attr("x", 600)
+				.attr("y", 200)
+				.attr("width",100)
+				.attr("height",100)
+				.attr("opacity", 0.0);			   
+		   
+		});
+	  	  svg.selectAll('.label').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 180)
+    		    .attr("y", 50+25*i)
+				.attr("transform", "rotate(0, 175, 175)")
+		});
+	  	  svg.selectAll('.piesquares').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 130)
+    		    .attr("y", 40+25*i)
+		});
+	  	  svg.selectAll('.count').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 150)
+    		    .attr("y", 50+25*i)
+				.text("("+dataPoint[i]["Count"]+")")
+				.attr("transform", "rotate(0, 175, 175)")
+		});
+	  	  svg.selectAll('.pie').each(function(d,i) {
+			  d3.select(this).transition()
+				.duration(300)
+				.attr('transform', 'translate('+currentPositions[i]["x"]+', 600)')
+				.attr('opacity', 0);
+		});
+	  	  svg.selectAll('.pie').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr('transform', 'translate(600, 300)')
+				.attr('opacity', 1);
+		});
+
+		
+  }
+  function barChart()
+  {
+	  	  svg.selectAll('.count').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", parseInt(dataPoint[i]['Count'])*20-220)
+    		    .attr("y", 265+50*i)
+				.text(dataPoint[i]["Count"])
+				.attr("transform", "rotate(270, 200, 200)")
+		});
+	  	  svg.selectAll('.piesquares').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", -100)
+    		    .attr("y", -100)
+		});
+	  	  svg.selectAll('.label').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", -200)
+    		    .attr("y", 240+50*i)
+				.attr("transform", "rotate(270, 200, 200)")
+		});
+	  	  svg.selectAll('.pie').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(700)
+				.attr('transform', 'translate('+(250+50*i)+','+(700)+')')
+				.attr('opacity', 0);
+		});
+	  	  svg.selectAll('.fruit').each(function(d,i) {			 
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(500)
+				.attr("rx", 0)
+				.attr("ry", 0)
+				.attr("x",250+50*i)
+				.attr("y",600-(parseInt(dataPoint[i]['Count'])*20))
+				.attr("width",20)
+				.attr("height",parseInt(dataPoint[i]['Count'])*20)
+				.attr("opacity", 1);			   			   
+		});
+  }
+  function barToBubbleChart()
+  {
+	  	  svg.selectAll('.count').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 200+60*i)
+    		    .attr("y", 400-(parseInt(dataPoint[i]['Count'])*15))
+				.attr("transform", "rotate(0, 200, 200)")
+		});
+	  	  svg.selectAll('.label').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 200+60*i)
+    		    .attr("y", 450-(parseInt(dataPoint[i]['Count'])*15))
+				.attr("transform", "rotate(0, 200, 200)")
+		});
+	  	  svg.selectAll('.fruit').each(function(d,i) {			 
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("rx", 100)
+				.attr("ry", 100)
+				.attr("x",200+60*i)
+				.attr("y",400-(parseInt(dataPoint[i]['Count'])*15))
+				.attr("width",parseInt(dataPoint[i]['Count'])*4.5)
+				.attr("height",parseInt(dataPoint[i]['Count'])*4.5)
+				.attr("opacity", 1);			   
+		});
+  }
+  function pieToBubbleChart()
+  {
+	  	  svg.selectAll('.piesquares').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", -100)
+    		    .attr("y", -100)
+		});
+	  	  svg.selectAll('.pie').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr('transform', 'translate('+(200+70*i)+','+(400-(parseInt(dataPoint[i]['Count'])*8))+')')
+				.attr("width",parseInt(dataPoint[i]['Count'])*1.5)
+				.attr("height",parseInt(dataPoint[i]['Count'])*1.5)
+				.attr("opacity",0)
+		});
+	  	  svg.selectAll('.count').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 200+60*i)
+    		    .attr("y", 400-(parseInt(dataPoint[i]['Count'])*15))
+    		    .text(dataPoint[i]['Count'])
+				.attr("transform", "rotate(0, 200, 200)")
+		});
+	  	  svg.selectAll('.label').each(function(d,i) {
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("x", 200+60*i)
+    		    .attr("y", 450-(parseInt(dataPoint[i]['Count'])*15))
+				.attr("transform", "rotate(0, 200, 200)")
+		});
+	  	  svg.selectAll('.fruit').each(function(d,i) {			 
+			  d3.select(this).transition()
+				.duration(500)
+				.attr("rx", 100)
+				.attr("ry", 100)
+				.attr("width",parseInt(dataPoint[i]['Count'])*10)
+				.attr("height",parseInt(dataPoint[i]['Count'])*10);
+		});
+	  	  svg.selectAll('.fruit').each(function(d,i) {			 
+			  d3.select(this).transition()
+			  	.delay(100*i)
+				.duration(1000)
+				.attr("rx", 100)
+				.attr("ry", 100)
+				.attr("x",200+60*i)
+				.attr("y",400-(parseInt(dataPoint[i]['Count'])*15))
+				.attr("width",parseInt(dataPoint[i]['Count'])*4.5)
+				.attr("height",parseInt(dataPoint[i]['Count'])*4.5)
+				.attr("opacity", 1);			   
+		});
+  }
+</script>

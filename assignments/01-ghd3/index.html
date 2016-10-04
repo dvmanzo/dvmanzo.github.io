@@ -1,0 +1,53 @@
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<body>
+<!-- My SVG with initial settings to make it centered -->
+<svg style="margin:auto; left:0; right:0; position:absolute; bottom:0; top:0;" width="700px" height="500px">
+</svg>
+
+<!-- My centered div of buttons that each trigger a function onclick -->
+<div id="buttonPanel" style="position:absolute; margin-left:auto; margin-right:auto; bottom: 50px; left:0px; right:0px; width:400px; text-align:center">
+    <button onclick='addCircle();'>Add Circle</button>
+    <button onclick='addRect();'>Add Rectangle</button>
+    <button onclick='addLine();'>Add Line</button>
+    <button onclick='addPoly();'>Add Poly</button>
+</div>
+</body>
+<script>
+console.log("Test");
+
+//selecting the SVG
+var vis = d3.select('body').select('svg');
+
+//adds a circle with random values for the x, y, radius, fill color, and stroke color
+function addCircle()
+{
+	vis.append('circle').attr('cx', Math.random()*(800)+50).attr('cy', Math.random()*(300)).attr('r', Math.random()*20).attr('stroke', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0)).attr('fill', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0));
+}
+
+//adds a rectangle with random values for the x, y, width, height, fill color, and stroke color
+function addRect()
+{
+	vis.append('rect').attr('x', Math.random()*(800)+50).attr('y', Math.random()*(300)).attr('width', Math.random()*(200)+50).attr('height', Math.random()*(150)).attr('stroke', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0)).attr('fill', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0));
+}
+
+//adds a line with random values for the x's, y's, stroke width, and stroke color
+function addLine()
+{
+	vis.append('line').attr('x1', Math.random()*(800)).attr('y1', Math.random()*(200)).attr('x2', Math.random()*(500)).attr('y2', Math.random()*(500)).attr('stroke-width', Math.random()*(5)).attr('stroke', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0));
+}
+
+//adds a polygon with random values for the stroke color, fill color, stroke width and then randomly generates up to 20 point sets of random x and y coordinates
+function addPoly()
+{
+	vis.append('polyline').attr('stroke', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0)).attr('fill', d3.rgb(Math.random() * 255, Math.random() * 255, Math.random() * 255, Math.random() * 1.0)).attr('stroke-width', Math.random()*5).attr('points', function(){
+		
+	var totalPoints = "";
+	
+	for(var i=0; i<Math.random()*20+1; i++)
+	{
+		totalPoints = totalPoints + "" + parseInt(Math.random()*700) + "," + parseInt(Math.random()*700) + " ";
+	}	
+	return totalPoints;
+	});
+}
+</script>
