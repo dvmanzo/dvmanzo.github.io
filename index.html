@@ -1,10 +1,6 @@
-<html>
-<head>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-
-</head>
 <body>
-<h1 style='margin-left: 300px;'>Slope Chart</h1>
+<h1 style="margin-left: 300px">Slope Chart</h1>
 </body>
 <script>
 var width=700;
@@ -41,7 +37,4 @@ var svg = d3.select("body")
 		svg.append("circle").attr('cx', 600).attr('cy', height - (2.5*dataPoints[x][1])-75).attr('r', 10).attr('stroke', dataPoints[x][3]).attr('fill', dataPoints[x][3]).attr('opacity', 1.0);
 		svg.append('line').attr('x1', 200).attr('y1', height - (2.5*dataPoints[x][0])-75).attr('x2', 600).attr('y2', height - (2.5*dataPoints[x][1])-75).attr('stroke', dataPoints[x][3]);
 	}
-	
-	
 </script>
-</html>
