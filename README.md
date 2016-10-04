@@ -1,6 +1,7 @@
 # Lab -- Making a Slopechart
 
-[Here's the link](https://dvmanzo.github.io/labs-slope/index.html) to the working demo.
+[Slope Chart](http://dvmanzo.github.io/lab-slopechart/index.html)
+
 
 Team:
 
