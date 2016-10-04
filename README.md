@@ -1,21 +1,26 @@
-# CS573 - Dan Manzo
+# Assignment 3 - Animated Transitions
 
-Dan Manzo is a programmer, pedagogue, and musician with interests in web applications, interactive media, serious games, information technology education, and multimedia performance. He is the founder of KnockOut Media and has authored numerous projects in these genres. He is currently pursuing a doctoral degree in Learning Sciences and Technologies at Worcester Polytechnic Institute where his primary research focuses on artificial intelligence, information systems, and interactive media used in educational environments.
+Project link: [VisA to VisB to VisC](http://dvmanzo.github.io/03-Animation/index.html).
 
-# Assignments
+# Team
 
-[Assignment 1](http://dvmanzo.github.io/assignments/01-ghd3/index.html)
+- Dan Manzo, dvmanzo
 
-[Assignment 2](http://dvmanzo.github.io/assignments/02-DataVis-10ways/)
+# Technical Achievements
 
-[Assignment 3](http://dvmanzo.github.io/assignments/03-Animation/index.html)
+I used the given data to make three different charts: a bar chart, a pie chart, and a bubble chart.
 
-# Labs
 
-[Data Deconstruction](http://dvmanzo.github.io/labs/lab-deconstruct/)
+![barchart](images/bar.png)
+The bar chart uses the count of each fruit as the height value and the color of the fruit color as the color of the bar.
 
-[Data Reconstruction](http://dvmanzo.github.io/labs/lab-reconstruct/)
+![piechart](images/pie.png)
+The pie chart uses the count of each fruit as the volume of each slice and also uses the fruit color as the color of the slice.
 
-[Color](http://dvmanzo.github.io/labs/lab-color/)
+![bubblechart](images/bubble.png)
+The bubble chart uses the count of each fruit as the size of the bubble itself and uses the fruit color as the color of the slice.
 
-[Slope Chart](http://dvmanzo.github.io/labs/lab-slopechart/index.html)
+# Design Achievements
+
+Transitioning from the bar graph to the bubble plot was much easier than dealing with the pie chart, but the piechart gave me a deeper knowledge
+of how the animations and transitions work in D3.
