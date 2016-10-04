@@ -4,7 +4,7 @@ Dan Manzo is a programmer, pedagogue, and musician with interests in web applica
 
 # Assignments
 
-[Assignment 1](http://dvmanzo.github.io/01-ghd3/index.html)
+[Assignment 1](http://dvmanzo.github.io/01-d3/index.html)
 
 [Assignment 2](http://github.com/dvmanzo/dvmanzo.github.io/tree/master/02-DataVis-10ways)
 
