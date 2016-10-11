@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.counties {
+fill: none;
+}
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+
+.d0_q3  { fill:rgba(246,189,58,1)}
+.d0_q2  { fill:rgba(246,189,58,.75)}
+.d0_q1  { fill:rgba(246,189,58,.4)}
+.d0_q0  { fill:rgba(203,178,185,.5)}
+
+.d1_q3  { fill:rgba(254,143,6,1);}
+.d1_q2  { fill:rgba(254,143,6,.75);}
+.d1_q1  { fill:rgba(254,143,6,.4);}
+.d1_q0  { fill:rgba(203,178,185,.5);}
+
+.d2_q3  { fill:rgba(231,37,37,1);}
+.d2_q2  { fill:rgba(231,37,37,.75);}
+.d2_q1  { fill:rgba(231,37,37,.4);}
+.d2_q0  { fill:rgba(203,178,185,.5);}
+
+.d3_q3  { fill:rgba(169,55,19,1)}
+.d3_q2  { fill:rgba(169,55,19,.75)}
+.d3_q1  { fill:rgba(169,55,19,.4)}
+.d3_q0  { fill:rgba(203,178,185,.5)}
+
+.d4_q0 { fill:rgba(203,178,185,.5);}
+.d4_q1 { fill:rgba(109,57,24,.5);}
+.d4_q2 { fill:rgba(109,57,24,.75);}
+.d4_q3 { fill:rgba(109,57,24,1);}
+
+
+
+
+
+</style>
+<center>
+<h2>US Drought Map</h2>
+<h3></h3>
+<svg align="center" width="960" height="600"></svg>
+</center>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script>
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+var rateById = d3.map();
+
+var quantize = d3.scaleQuantize()
+    .domain([0, 100])
+    .range(d3.range(4).map(function(i) { return "q" + i; }));
+
+var projection = d3.geoAlbersUsa()
+    .scale(1280)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geoPath()
+    .projection(projection);
+	
+var dataPoints = [];
+var currentMap=1;
+
+d3.queue()
+    .defer(d3.json, "us.json")
+    .defer(d3.tsv, "drought.tsv", function(d) {dataPoints[d.FIPS]=[{D0: d.D0, D1: d.D1, D2: d.D2, D3: d.D3, D4: d.D4}]; rateById.set(d.FIPS, +d.D0); })
+    .await(ready);
+
+function ready(error, us) {
+  if (error) throw error;
+
+  svg.append("g")
+      .attr("class", "counties")
+    .selectAll("path")
+      .data(topojson.feature(us, us.objects.counties).features)
+    .enter().append("path")
+      .attr("id", function(d) { return d.id; })
+      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
+      .attr("d", path);
+
+	  addData();
+}
+
+function addData()
+{
+	svg.selectAll("path").each(function (d, i){
+			d3.select(this).attr("D0", dataPoints[d3.select(this).attr("id")][0]["D0"]).attr("D1", dataPoints[d3.select(this).attr("id")][0]["D1"]).attr("D2", dataPoints[d3.select(this).attr("id")][0]["D2"]).attr("D3", dataPoints[d3.select(this).attr("id")][0]["D3"]).attr("D4", dataPoints[d3.select(this).attr("id")][0]["D4"]);
+			});
+}
+
+function changeMap()
+{
+	console.log("Changing to "+currentMap+"...");
+	switch(currentMap)
+	{
+		case 1:
+			svg.selectAll("path").each(function (d, i){d3.select(this).attr("class", "d0_"+quantize(d3.select(this).attr("D0")));});
+			document.getElementsByTagName("h3").item(0).innerHTML="Drought level is D0 or higher";
+			currentMap++;
+		break;
+
+		case 2:
+			svg.selectAll("path").each(function (d, i){d3.select(this).attr("class", "d1_"+quantize(d3.select(this).attr("D1")));});
+			document.getElementsByTagName("h3").item(0).innerHTML="Drought level is D1 or higher";
+			currentMap++;
+		break;
+
+		case 3:
+			svg.selectAll("path").each(function (d, i){d3.select(this).attr("class", "d2_"+quantize(d3.select(this).attr("D2")));});
+			document.getElementsByTagName("h3").item(0).innerHTML="Drought level is D2 or higher";
+			currentMap++;
+		break;
+
+		case 4:
+			svg.selectAll("path").each(function (d, i){d3.select(this).attr("class", "d3_"+quantize(d3.select(this).attr("D3")));});
+			document.getElementsByTagName("h3").item(0).innerHTML="Drought level is D3 or higher";
+			currentMap++;
+		break;
+
+		case 5:
+			svg.selectAll("path").each(function (d, i){d3.select(this).attr("class", "d4_"+quantize(d3.select(this).attr("D4")));});
+			document.getElementsByTagName("h3").item(0).innerHTML="Drought level is D4 or higher";
+			currentMap=1;
+		break;
+		
+		default:
+		break;
+	}	
+}
+setInterval(function () {changeMap();}, 2000);
+</script>

@@ -19,3 +19,5 @@ Dan Manzo is a programmer, pedagogue, and musician with interests in web applica
 [Color](http://github.com/dvmanzo/dvmanzo.github.io/tree/master/lab-color/)
 
 [Slope Chart](http://dvmanzo.github.io/lab-slopechart/index.html)
+
+[U.S. Drought Map](http://dvmanzo.github.io/lab-map/index.html)
