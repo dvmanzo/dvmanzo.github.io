@@ -10,6 +10,8 @@ Dan Manzo is a programmer, pedagogue, and musician with interests in web applica
 
 [Assignment 3](http://dvmanzo.github.io/03-Animation/index.html)
 
+[Assignment 4](http://dvmanzo.github.io/04-Experiment/index.html)
+
 # Labs
 
 [Data Deconstruction](http://github.com/dvmanzo/dvmanzo.github.io/tree/master/lab-deconstruct/)

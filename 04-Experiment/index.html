@@ -1,0 +1,207 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+
+
+<style>
+</style>
+
+<body>
+  <h1 align='center'></h1><br>
+  <div style="position: absolute; margin: auto; left:0; right:0; top:0; bottom:0; width: 700px">
+  <svg style='width: 650px; height: 405px;'></svg><br>
+  <p id='instructions' style='text-align:center'>In this experiment, you are asked to judge what is the percent of a smaller value to a larger value in several charts.<br><br>We won't record any other infromation from you except your answers. Click the agree button to begin.<br><br>Thank You!<br><br><br><input type='button' onclick='changeView();' value='I Agree!'></p>
+  </div>
+</body>
+
+<script>
+var currentView=0;
+var trialID="participant_"+Math.floor(Math.random()*99999);
+var canvas = d3.select('body').select('svg');
+var trialReport=[];
+var currentDifference;
+var chartType;
+function changeView()
+{
+	if (currentView>0)
+	{
+		if(document.getElementById("reportedValue").value.length==0 || document.getElementById("reportedValue").value.match(/[^$,.\d]/))
+		{
+			document.getElementById("reportedValue").style.backgroundColor="red";
+			document.getElementById("reportedValue").title="This is a test";
+			return;
+		}
+		document.getElementById("reportedValue").style.backgroundColor="initial";
+	}
+	
+	switch(currentView)
+	{
+		case 0:
+			document.getElementById("instructions").innerHTML="Two values are marked with dots.<br>What percentage do you think the smaller value is of the larger value?<br>Please type <u>just the number</u> in below.<br><br>(i.e. if you think the smaller one is exactly half of the larger one, type in 50)<br><br><input id='reportedValue' type='tel' placeholder='Enter value here'><input type='button' onclick='changeView();' value='Next'>";
+			newChart();
+			currentView++;
+		break;
+		
+		case 6:
+			trialReport.push([trialID, currentView, chartType, currentDifference, document.getElementById("reportedValue").value]);
+			canvas.selectAll("*").remove();
+			document.getElementById("instructions").innerHTML="The experiment is complete. Thank you!";
+			sendReport();
+			break;
+					
+		default:
+			trialReport.push([trialID, currentView, chartType, currentDifference, document.getElementById("reportedValue").value]);
+			document.getElementById("reportedValue").value="";
+			newChart();
+			currentView++;
+		break;
+	}
+}
+
+function generatePie()
+{	
+	var random1 = Math.floor(Math.random()*10);
+	var random2 = Math.floor(Math.random()*10);
+	var value1;
+	var value2;
+	chartType="pie";
+	while(random1==random2 || random1-random2==1 || random2-random1==1 || random2-random1==9 || random1-random2==9)
+	{
+		random2 = Math.floor(Math.random()*10);
+	}
+	var pieData = [];
+	for(var i=0; i< 10; i++)
+	{
+		var temp=20+Math.floor(Math.random()*80);
+		if(random1==i)
+		value1=temp;
+		if(random2==i)
+		value2=temp;
+		pieData.push(temp);
+	}
+	var radius = Math.min(300, 300) / 2;
+	var arc = d3.svg.arc()
+	  .outerRadius(radius);
+	
+	var pie = d3.layout.pie()
+	  .value(function(d, i) { return d; })
+	  .sort(null);
+	
+	canvas.selectAll('path')
+	  .data(pie(pieData))
+	  .enter()
+	  .append('path')
+	  .attr('class', 'pie')
+	  .attr('d', arc)
+	  .attr('fill', 'white')
+	  .attr('stroke', 'black')
+	  .attr('transform', 'translate(350, 225)')
+	canvas.append('circle').attr('cx', 350+5*(Math.sin(pie(pieData)[random1].endAngle-((pie(pieData)[random1].endAngle-pie(pieData)[random1].startAngle)/2))*15)).attr('cy', 225-5*(Math.cos(pie(pieData)[random1].endAngle-((pie(pieData)[random1].endAngle-pie(pieData)[random1].startAngle)/2))*15)).attr('r', 5).attr('stroke', "black").attr('fill', "black");
+	canvas.append('circle').attr('cx', 350+5*(Math.sin(pie(pieData)[random2].endAngle-((pie(pieData)[random2].endAngle-pie(pieData)[random2].startAngle)/2))*15)).attr('cy', 225-5*(Math.cos(pie(pieData)[random2].endAngle-((pie(pieData)[random2].endAngle-pie(pieData)[random2].startAngle)/2))*15)).attr('r', 5).attr('stroke', "black").attr('fill', "black");
+	currentDifference=(value2>value1)?value1/value2:value2/value1;
+}
+
+function generateBars()
+{
+	var random1 = Math.floor(Math.random()*10);
+	var random2 = Math.floor(Math.random()*10);
+	var value1;
+	var value2;
+	while(random1==random2 || random1-random2==1 || random2-random1==1)
+	{
+		random2 = Math.floor(Math.random()*10);
+	}
+	chartType="bar";
+	for(var i=0; i<10; i++)
+	{
+		var tempY=Math.floor(Math.random()*(310)+40);
+		canvas.append('rect').attr('x', 25+(i*60)).attr('y', 390-tempY).attr('width', 50).attr('height', tempY).attr('stroke', "black").attr('fill', "white");
+		if(i==random1)
+		{
+			value1=tempY;
+			canvas.append('circle').attr('cx', 50+(i*60)).attr('cy', 370).attr('r', 5).attr('stroke', "black").attr('fill', "black");
+		}
+		if(i==random2)
+		{
+			value2=tempY;
+			canvas.append('circle').attr('cx', 50+(i*60)).attr('cy', 370).attr('r', 5).attr('stroke', "black").attr('fill', "black");
+		}
+	}
+	currentDifference=(value2>value1)?value1/value2:value2/value1;
+}
+
+function generateHorizontalBars()
+{
+	var random1 = Math.floor(Math.random()*10);
+	var random2 = Math.floor(Math.random()*10);
+	var value1;
+	var value2;
+	while(random1==random2 || random1-random2==1 || random2-random1==1)
+	{
+		random2 = Math.floor(Math.random()*10);
+	}
+	chartType="horizontal";
+	for(var i=0; i<10; i++)
+	{
+		var tempX=Math.floor(Math.random()*(310)+40);
+		canvas.append('rect').attr('y', 50+(i*35)).attr('x', 20).attr('height', 30).attr('width', tempX).attr('stroke', "black").attr('fill', "white");
+		if(i==random1)
+		{
+			value1=tempX;
+			canvas.append('circle').attr('cy', 65+(i*35)).attr('cx', 40).attr('r', 5).attr('stroke', "black").attr('fill', "black");
+		}
+		if(i==random2)
+		{
+			value2=tempX;
+			canvas.append('circle').attr('cy', 65+(i*35)).attr('cx', 40).attr('r', 5).attr('stroke', "black").attr('fill', "black");
+		}
+	}
+	currentDifference=(value2>value1)?value1/value2:value2/value1;
+}
+
+function newChart()
+{
+	canvas.selectAll("*").remove();
+	switch(Math.floor(Math.random()*3))
+	{
+		case 0:
+			generatePie();
+			break;
+		case 1:
+			generateBars();
+			canvas.append('line').attr('x1', 10).attr('y1', 10).attr('x2', 10).attr('y2', 400).attr('stroke-width', 1).attr('stroke', "black");
+			canvas.append('line').attr('x1', 10).attr('y1', 400).attr('x2', 640).attr('y2', 400).attr('stroke-width', 1).attr('stroke', "black");
+			break;
+		case 2:
+			generateHorizontalBars();
+			canvas.append('line').attr('x1', 10).attr('y1', 10).attr('x2', 10).attr('y2', 400).attr('stroke-width', 1).attr('stroke', "black");
+			canvas.append('line').attr('x1', 10).attr('y1', 400).attr('x2', 640).attr('y2', 400).attr('stroke-width', 1).attr('stroke', "black");
+			break;
+		default:
+			break;
+	}
+}
+
+function sendReport()
+{
+	var sentReport="";
+	for(var i=0; i<trialReport.length; i++)
+	{
+		sentReport=sentReport+trialReport[i][0]+","+trialReport[i][1]+","+trialReport[i][2]+","+trialReport[i][3]+","+trialReport[i][4]+";";
+	}
+	
+	var xmlhttp;
+	if (window.XMLHttpRequest)
+	{
+	   xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{
+	   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+	}	
+	xmlhttp.open("POST","sendreport.php",true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send("sentReport="+sentReport);
+}
+</script>
