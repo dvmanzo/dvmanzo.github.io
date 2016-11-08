@@ -25,3 +25,5 @@ Dan Manzo is a programmer, pedagogue, and musician with interests in web applica
 [U.S. Drought Map](http://dvmanzo.github.io/lab-map/index.html)
 
 [Alcohol Study](http://github.com/dvmanzo/dvmanzo.github.io/tree/master/lab-alcoholstudy/)
+
+[Research Presentation](http://github.com/dvmanzo/dvmanzo.github.io/tree/master/lab-research/)
