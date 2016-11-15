@@ -1,0 +1,423 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+
+<style>
+body {
+	min-width:1400px;
+	min-height:650px;
+}
+.hovered {
+	fill: gold;
+	opacity: 1.0;
+}
+.partial {
+	fill: silver;
+	opacity: 1.0;
+}
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 100px;					
+    height: 65px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+</style>
+
+<body>
+  <h1 align='center'>Multiple Views</h1>
+  <div style='margin:auto; width:600px' align='center'>For this assignment, I used the Texas Inmate Population dataset. This dataset gives demographic information on the population of inmates that are detained in the state of Texas and can be found here. I visualized this data into three different charts that interact with eachother. As you highlight one, the other corresponding visualizations become highlighted as well. Hovering over each visualization gives more information for that particular set of data. The stacked bar chart also breaks down the data based on gender.<br><br></div>
+</body>
+
+<script>
+  var dataPoint=[];
+  var width=500;
+  var height=400;
+  var svg1 = d3.select("body")
+  .append("svg")
+  .attr("width", width-100)
+  .attr("height", height);
+  var svg2 = d3.select("body")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+  var svg3 = d3.select("body")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+   var div1 = d3.select("body").append("div")	
+   .attr("class", "tooltip")				
+   .style("opacity", 0);
+   var div2 = d3.select("body").append("div")	
+   .attr("class", "tooltip")				
+   .style("opacity", 0);
+   var div3 = d3.select("body").append("div")	
+   .attr("class", "tooltip")				
+   .style("opacity", 0);
+	  
+  var maleCount=0, femaleCount=0, blackCount=0, whiteCount=0, otherCount=0, hispanicCount=0, blackMale=0, whiteMale=0, hispanicMale=0, otherMale=0, totalCount=0;
+  
+  d3.csv('texas.csv', function(err, d) {	
+  d.forEach(function (data, i)
+  {
+	if(data['Gender']=="M")
+	{
+		maleCount++;
+		if(data['Race']=="B")
+		{
+			blackCount++;
+			blackMale++;
+		}
+		else if(data['Race']=="W")
+		{
+			whiteCount++;
+			whiteMale++;
+		}
+		else if(data['Race']=="H")
+		{
+			hispanicCount++;
+			hispanicMale++;
+		}
+		else
+		{
+			otherCount++;
+			otherMale++;	
+		}
+		totalCount++;
+	}
+	else if(data['Gender']=="F")
+	{
+		femaleCount++;
+		if(data['Race']=="B")
+		{
+			blackCount++;
+		}
+		else if(data['Race']=="W")
+		{
+			whiteCount++;
+		}
+		else if(data['Race']=="H")
+		{
+			hispanicCount++;
+		}
+		else
+		{
+			otherCount++;
+		}
+		totalCount++;
+	}
+	dataPoint.push({Gender: data['Gender'], Race: data['Race']});
+  });
+  
+  loadView1();  
+  loadView2();  
+  loadView3();  
+  });
+  
+  function loadView1()
+  {
+		svg1.append("rect").attr('class', 'Demographic White Male').attr('x', 50).attr('y', 400-((whiteMale)/200)).attr('width', 50).attr('height', whiteMale/200).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("White");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>White Male</strong></u><br><strong>Count:</strong> "+whiteMale+"<br><strong>White:</strong> " + Math.round(((whiteMale)/whiteCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((whiteMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+250) + "px");
+				
+		}).on("mouseout", function() {
+			removeHighlight("White");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+		svg1.append("rect").attr('class', 'Demographic White Female').attr('x', 50).attr('y', 400-((whiteCount-whiteMale)/200)-((whiteMale)/200)).attr('width', 50).attr('height', (whiteCount-whiteMale)/200).attr('fill', "rgb(181, 205, 225)").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("White");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>White Female</strong></u><br><strong>Count:</strong> "+(whiteCount-whiteMale)+"<br><strong>White:</strong> " + Math.round(((whiteCount-whiteMale)/whiteCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((whiteCount-whiteMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+150) + "px");
+				
+		}).on("mouseout", function() {
+			removeHighlight("White");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+  		svg1.append("text").attr('class', 'count').attr("x", 0)
+        .attr("y", 45)
+		.attr("transform", "rotate(270, 200, 200)")
+        .text("White");
+		
+		svg1.append("rect").attr('class', 'Demographic Black Male').attr('x', 125).attr('y', 400-((blackMale)/200)).attr('width', 50).attr('height', blackMale/200).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Black");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>Black Male</strong></u><br><strong>Count:</strong> "+blackMale+"<br><strong>Black:</strong> " + Math.round(((blackMale)/blackCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((blackMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+250) + "px");
+				
+		}).on("mouseout", function() {
+			removeHighlight("Black");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+		svg1.append("rect").attr('class', 'Demographic Black Female').attr('x', 125).attr('y', 400-((blackCount-blackMale)/200)-((blackMale)/200)).attr('width', 50).attr('height', (blackCount-blackMale)/200).attr('fill', "rgb(181, 205, 225)").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Black");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>Black Female</strong></u><br><strong>Count:</strong> "+(blackCount-blackMale)+"<br><strong>Black:</strong> " + Math.round(((blackCount-blackMale)/blackCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((blackCount-blackMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+150) + "px");
+				
+		}).on("mouseout", function() {
+			removeHighlight("Black");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+  		svg1.append("text").attr('class', 'count').attr("x", 0)
+        .attr("y", 120)
+		.attr("transform", "rotate(270, 200, 200)")
+        .text("Black");
+
+
+		svg1.append("rect").attr('class', 'Demographic Hispanic Male').attr('x', 200).attr('y', 400-((hispanicMale)/200)).attr('width', 50).attr('height', hispanicMale/200).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Hispanic");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>Hispanic Male</strong></u><br><strong>Count:</strong> "+hispanicMale+"<br><strong>Hispanic:</strong> " + Math.round(((hispanicMale)/hispanicCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((hispanicMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+250) + "px");
+				
+		}).on("mouseout", function() {
+			removeHighlight("Hispanic");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+		svg1.append("rect").attr('class', 'Demographic Hispanic Female').attr('x', 200).attr('y', 400-((hispanicCount-hispanicMale)/200)-((hispanicMale)/200)).attr('width', 50).attr('height', (hispanicCount-hispanicMale)/200).attr('fill', "rgb(181, 205, 225)").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Hispanic");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>Hispanic Female</strong></u><br><strong>Count:</strong> "+(hispanicCount-hispanicMale)+"<br><strong>Hispanic:</strong> " + Math.round(((hispanicCount-hispanicMale)/hispanicCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((hispanicCount-hispanicMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+150) + "px");
+				
+		}).on("mouseout", function() {
+				removeHighlight("Hispanic");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+		
+  		svg1.append("text").attr('class', 'count').attr("x", 0)
+        .attr("y", 195)
+		.attr("transform", "rotate(270, 200, 200)")
+        .text("Hispanic");
+
+
+		svg1.append("rect").attr('class', 'Demographic Other Male').attr('x', 275).attr('y', 400-((otherMale)/200)).attr('width', 50).attr('height', otherMale/200).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Other");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>Other Male</strong></u><br><strong>Count:</strong> "+otherMale+"<br><strong>Other:</strong> " + Math.round(((otherMale)/otherCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((otherMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+250) + "px");
+				
+		}).on("mouseout", function() {
+			removeHighlight("Other");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+		
+		svg1.append("rect").attr('class', 'Demographic Other Female').attr('x', 275).attr('y', 400-((otherCount-otherMale)/200)-((otherMale)/200)).attr('width', 50).attr('height', (otherCount-otherMale)/200).attr('fill', "rgb(181, 205, 225)").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Other");
+            div1.transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+				this.className.baseVal+=" partial";
+					
+            div1.html("<u><strong>Other Female</strong></u><br><strong>Count:</strong> "+(otherCount-otherMale)+"<br><strong>Other:</strong> " + Math.round(((otherCount-otherMale)/otherCount)*100) + "%<br><strong>Total: </strong>" + Math.round(((otherCount-otherMale)/totalCount)*100)+"%")	
+                .style("left", (this.x.baseVal.value) + "px")		
+                .style("top", (this.y.baseVal.value+150) + "px");
+				
+		}).on("mouseout", function() {
+				removeHighlight("Other");
+           		 div1.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+				this.className.baseVal=this.className.baseVal.replace(" partial", "");
+		});
+		
+  		svg1.append("text").attr('class', 'count').attr("x", 0)
+        .attr("y", 270)
+		.attr("transform", "rotate(270, 200, 200)")
+        .text("Other");
+  }
+  function loadView2()
+  {
+		svg2.append('line').attr('x1', 25).attr('y1', 0).attr('x2', 25).attr('y2', 375).attr('stroke-width', 1).attr('stroke', "black");
+		svg2.append('line').attr('x1', 25).attr('y1', 375).attr('x2', 500).attr('y2', 375).attr('stroke-width', 1).attr('stroke', "black");
+		svg2.append('text').attr('x', 10).attr('y', 390).text("0");
+		svg2.append('text').attr('x', 0).attr('y', 20).text("15k");
+		svg2.append('text').attr('x', 475).attr('y', 390).text("50k");
+		svg2.append('text').attr('x', 200).attr('y', 390).text("Number of Males");
+		svg2.append('text').attr('x', 150).attr('y', 20).attr("transform", "rotate(270, 200, 200)").text("Number of Females");
+		svg2.append("circle").attr('class', 'Demographic White').attr('cx', whiteMale/100).attr('cy', 300-((whiteCount-whiteMale)/100)).attr('r', Math.sqrt(whiteCount/50)).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("White");
+            div2.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div2.html("<u><strong>White</strong></u><br><strong>Male:</strong> "+whiteMale+"<br><strong>Female:</strong> " + (whiteCount-whiteMale) + "<br><strong>Total:</strong> " +whiteCount)	
+                .style("left", (400+this.cx.baseVal.value) + "px")		
+                .style("top", (100+this.cy.baseVal.value) + "px");
+					
+		}).on("mouseout", function() {
+				removeHighlight("White");
+           		 div2.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+		});
+
+		svg2.append("circle").attr('class', 'Demographic Black').attr('cx', blackMale/100).attr('cy', 300-((blackCount-blackMale)/100)).attr('r', Math.sqrt(blackCount/50)).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Black");
+            div2.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div2.html("<u><strong>Black</strong></u><br><strong>Male:</strong> "+blackMale+"<br><strong>Female:</strong> " + (blackCount-blackMale) + "<br><strong>Total:</strong> " +blackCount)	
+                .style("left", (400+this.cx.baseVal.value) + "px")		
+                .style("top", (100+this.cy.baseVal.value) + "px");
+					
+		}).on("mouseout", function() {
+			removeHighlight("Black");
+           		 div2.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+		});
+
+		svg2.append("circle").attr('class', 'Demographic Hispanic').attr('cx', hispanicMale/100).attr('cy', 300-((hispanicCount-hispanicMale)/100)).attr('r', Math.sqrt(hispanicCount/50)).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Hispanic");
+            div2.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div2.html("<u><strong>Hispanic</strong></u><br><strong>Male:</strong> "+hispanicMale+"<br><strong>Female:</strong> " + (hispanicCount-hispanicMale) + "<br><strong>Total:</strong> " +hispanicCount)	
+                .style("left", (400+this.cx.baseVal.value) + "px")		
+                .style("top", (100+this.cy.baseVal.value) + "px");					
+		}).on("mouseout", function() {
+			removeHighlight("Hispanic");
+           		 div2.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+		});
+
+		svg2.append("circle").attr('class', 'Demographic Other').attr('cx', 25+otherMale/100).attr('cy', 300-((otherCount-otherMale)/100)).attr('r', Math.sqrt(otherCount/50)).attr('fill', "steelblue").attr('opacity', 0.75).on("mouseover", function() {
+			highlightView("Other");
+            div2.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div2.html("<u><strong>Other</strong></u><br><strong>Male:</strong> "+otherMale+"<br><strong>Female:</strong> " + (otherCount-otherMale) + "<br><strong>Total:</strong> " +otherCount)	
+                .style("left", (400+this.cx.baseVal.value) + "px")		
+                .style("top", (100+this.cy.baseVal.value) + "px");
+					
+		}).on("mouseout", function() {
+				removeHighlight("Other");
+           		 div2.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+		});
+
+
+		
+  }
+  function highlightView(view)
+  {
+	  var elements = document.getElementsByClassName(view);
+	  for(var i=0; i<elements.length; i++)
+	  {
+		  elements[i].className.baseVal+=" hovered";
+	  }
+  }
+  function removeHighlight(view)
+  {
+	  var elements = document.getElementsByClassName(view);
+	  console.log(elements.length);
+	  for(var i=0; i<elements.length; i++)
+	  {
+		  console.log(elements[i].className.baseVal);
+		  elements[i].className.baseVal=elements[i].className.baseVal.replace(" hovered", "");
+		  
+	  }
+  }
+  function loadView3()
+  {
+	  			var demographics=[whiteCount, blackCount, hispanicCount, otherCount];
+				var labels=["White", "Black", "Hispanic", "Other"];
+       			var radius = Math.min(300, 300) / 2;
+				var arc = d3.svg.arc()
+				  .outerRadius(radius);
+		
+				var pie = d3.layout.pie()
+				  .value(function(d, i) { return d; })
+				  .sort(null);
+
+				svg3.selectAll('path')
+				  .data(pie(demographics))
+				  .enter()
+				  .append('path')
+				  .attr('class', function(d, i){ return 'pie '+labels[i];})
+				  .attr('d', arc)
+				  .attr('fill', function(d, i) { 
+					if(i%2==0)
+					return "steelblue";
+					
+					return "rgb(181, 205, 225)";
+				  })
+				  .attr("opacity", 0.75)
+				  .attr('transform', 'translate(200, 200)').on("mouseover", function(d, i) {
+					highlightView(labels[i]);
+				}).on("mouseout", function(d, i) {
+					removeHighlight(labels[i]);
+				});
+				  for(var i=0; i<4; i++)
+				  {
+					  svg3.append("text").attr('class', 'pie').attr("x", 150+7*(Math.sin(pie(demographics)[i].endAngle-((pie(demographics)[i].endAngle-pie(demographics)[i].startAngle)/2))*15))
+					.attr("y", 225-7*(Math.cos(pie(demographics)[i].endAngle-((pie(demographics)[i].endAngle-pie(demographics)[i].startAngle)/2))*15))
+					//.attr("transform", "rotate("+((pie(demographics)[i].startAngle+(pie(demographics)[i].endAngle-pie(demographics)[i].startAngle)))+")")
+					.text(""+labels[i]);	    
+				  }
+  }
+</script>
