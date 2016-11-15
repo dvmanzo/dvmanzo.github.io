@@ -6,7 +6,7 @@ Project link: [Experiment](http://dvmanzo.github.io/05-MapsAndViews/index.html).
 
 #What I Did
 
-For this assignment, I used the Texas Inmate Population dataset. This dataset gives demographic information on the population of inmates that are detained in the state of Texas and can be found here. I visualized this data into three different charts that interact with eachother. As you highlight one, the other corresponding visualizations become highlighted as well. Hovering over each visualization gives more information for that particular set of data. The stacked bar chart also breaks down the data based on gender.
+For this assignment, I used the Texas Inmate Population dataset. This dataset gives demographic information on the population of inmates that are detained in the state of Texas and can be found [here](http://www.tdcj.state.tx.us/documents/High_Value_Data_Sets.xlsx). I visualized this data into three different charts that interact with eachother. As you highlight one, the other corresponding visualizations become highlighted as well. Hovering over each visualization gives more information for that particular set of data. The stacked bar chart also breaks down the data based on gender.
 
 
 ##Example of the stacked bar chart showing the values for the bottom part of the bar (Hispanic males).
