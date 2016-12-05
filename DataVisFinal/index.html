@@ -2,6 +2,7 @@
 
 <style>
 body {
+	font-family: Helvetica;
 	min-width:1400px;
 	min-height:650px;
 	text-align: center;
@@ -9,34 +10,35 @@ body {
 h1 {
 text-align: center;
 }
+a {
+	color: #666;
+	font-weight: bold;
+}
+
+a:hover{
+	color: #2850AD;
+	font-weight: bold;
+}
 </style>
 
 <body>
-<h1>Introduction</h1>
-<div align='right'><p align='right' style='width:700px; margin-right: 100px'>Having lived in New Jersey my entire life, I live about 20 minutes away from New
-York City. I've been aware of "Stop and Frisk" since I can remember, but being a
-white male have yet to be on the receiving end. Recently, Stop and Frisk has found
-its way back into public discussion due to the Presidential debates and it's highly
+<div style="position: fixed; background-color: #000; color: #FFF; font-size: 36px; font-weight: 500; text-align: left; left:0px; top:0px; padding-left: 50px; padding-top: 20px; width: 100vw; height:50px;"><span>Welcome to New York</span><span style="padding-left: 400px; font-size:16px"><strong>Activity</strong></span><span style="padding-left: 50px; font-size:16px"><strong>About</strong></span></div>
+<span id="ticker" style="position:fixed; cursor:pointer; left:0px; top:70px; height: 25px; width:100vw; right:0px; margin:auto"><a onclick="currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=4; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();">Were black males frisked often in Manhattan in 2009?</a></span><br>
+<br>
+<br>
+<div align='right'><p align='right' style='width:700px; margin-right: 100px; display:none'>Having lived in New Jersey my entire life, I live about 20 minutes away from New
+York City. I've been aware of "Stop and Frisk" since I can remember, but have yet to be on the receiving end. Recently, Stop and Frisk has found
+its way back into public discussion due to the Presidential debates and it's a highly
 controversial and sensitive subject. It was referred to as something that was no
 longer in effect, which is not true. The subsequent discussion thereafter
 demonstrated how most people are unaware of whether or not stop and frisk is
 actually effective, what this practice yielded, and exactly how this activity ran and
-still continues to run on a micro-scale even now.<br><br>The goal of this project is to highlight who is being targeted, where one is most likely
-to be stopped, and shed light into what is resulting from an ideology that may or
-may not be as effective as people would assume. As citizens of the United States, we are protected from search and
-seizure without probable cause by the 4th Amendment of the Constitution. Stop and
-frisk, much like the PATRIOT ACT, feeds into the fear and paranoia of suspecting
-that anyone and everyone is likely breaking the law or plotting some attack that we
-should be countering by signing away our rights and freedoms through constant
-surveillance. The ideology that being able to search someone without cause is
-completely unconstitutional. The PATRIOT ACT, as we recently found out thanks to
-whistleblower Edward Snowden, is being abused as we are actively spying on every
-citizen and recording all data transmissions regardless of whether or not they are
-under investigation of criminal activity. Is stop and frisk another type of policy that
-is overextending the reach of the law? If so, is it even effective in lowering the rate of
-crime?</p></div>
-<h1>Data</h1>
-<div><select id="boroughSelect" onChange="changeOptions();">
+still continues to run on a micro-scale even now.<br><br>The goal of this project is to highlight who is being targeted and shed light into what is resulting from an ideology that may or
+may not be as effective as people would assume.</p></div><br>
+<br>
+<br>
+<br>
+<select id="boroughSelect" onChange="changeOptions();">
 <option value="ALL_BOROUGHS" selected>All</option>
 <option value="Brooklyn">Brooklyn</option>
 <option value="Bronx">The Bronx</option>
@@ -69,11 +71,22 @@ crime?</p></div>
 <option value="Black_Hispanic">Black Hispanic</option>
 <option value="White_Hispanic">White Hispanic</option>
 <option value="White">White</option>
-</select></div>
-<br>
-<br>
-<a style="cursor:pointer" onclick="showView('Race');">Stops by Race</a> | <a style="cursor:pointer" onclick="showView('Gender');">Stops by Gender</a> | <a style="cursor:pointer" onclick="showView('Year');">Stops by Year</a> | <a style="cursor:pointer" onclick="showView('Force');">Was force used?</a>
-<br><svg id="svg1" width="800" height="1000"></svg>
+</select>
+<div style="width:1100px">
+    <div style="float:left; width: 280px; margin-top:100px; text-align: left; padding-left: 20px">
+    <a style="cursor:pointer" onClick="showView('Gender');">Stops by Gender</a><br>
+    <a style="cursor:pointer" onClick="showView('Race');">Stops by Race</a><br>
+    <a style="cursor:pointer" onClick="showView('Year');">Stops by Year</a><br><br>
+    <a style="cursor:pointer" onClick="showView('Frisked');">Were they frisked?</a><br>
+    <a style="cursor:pointer" onClick="showView('Force');">Was force used?</a><br>
+    <a style="cursor:pointer" onClick="showView('Arrests');">Was an arrest made?</a><br>
+    <a style="cursor:pointer" onClick="showView('Summons');">Was a summons  issued?</a><br>
+    <a style="cursor:pointer" onClick="showView('Contraband');">Was contraband found?</a><br>
+    <a style="cursor:pointer" onClick="showView('Weapons');">Was a weapon found?</a>
+    <br>
+    </div>
+<svg style="float:left" id="svg1" width="800" height="1000"></svg>
+</div>
 
 </body>
 
@@ -87,15 +100,41 @@ crime?</p></div>
   var races=["Black", "White", "Black_Hispanic", "White_Hispanic", "Asian"];
   var gender=["Male", "Female"];
   var usedForce=["Force", "NonForce"];
+  var frisked=["Frisked", "NonFrisked"];
+  var summons=["Summons", "NonSummons"];
+  var arrests=["Arrested", "NonArrested"];
+  var contraband=["Contraband", "NonContraband"]
+  var weapon=["Weapons", "NonWeapons"];
   var dataPoint=[];
   var width=500;
   var height=400;
   var svg1 = d3.select("#svg1");
-   var div1 = d3.select("body").append("div")	
-   .attr("class", "tooltip")				
-   .style("opacity", 0);
-	  
+  var div1 = d3.select("body").append("div")	
+  .attr("class", "tooltip")				
+  .style("opacity", 0);  
   var x=0, maleCount=0, femaleCount=0, blackMaleCount=0, whiteMaleCount=0, asianMaleCount=0, whiteHispanicMaleCount=0, blackHispanicMaleCount=0, blackFemaleCount=0, whiteFemaleCount=0, asianFemaleCount=0, whiteHispanicFemaleCount=0, blackHispanicFemaleCount=0;
+  var tickerCount=0;
+  function changeTicker()
+  {
+	tickerCount++;
+	if(tickerCount>1)
+	tickerCount=0;
+	switch(tickerCount)
+	{
+		case 0:
+			document.getElementById("ticker").innerHTML="<a onclick=\"currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=4; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();\">Were black males frisked often in Manhattan in 2009?</a>";
+			break;
+			
+		case 1:
+			document.getElementById("ticker").innerHTML="<a onclick=\"currentView='Force'; document.getElementById('boroughSelect').selectedIndex=5; document.getElementById('yearSelect').selectedIndex=0; document.getElementById('genderSelect').selectedIndex=2; document.getElementById('raceSelect').selectedIndex=1; changeOptions();\">Was force used more often than not for Asian females in Queens?</a>";
+			break;
+			
+		default:
+			tickerCount=0;
+			tickerCount();
+			break;	
+	}
+  }
   function changeOptions()
   {
 	  currentBorough=document.getElementById("boroughSelect").value;
@@ -118,6 +157,22 @@ crime?</p></div>
 
 		  case "Year":
 		  	showYear();
+			break;
+
+		  case "Summons":
+		  	showSummons();
+			break;
+
+		  case "Weapons":
+		  	showSummons();
+			break;
+
+		  case "Contraband":
+		  	showContraband();
+			break;
+
+		  case "Frisked":
+		  	showFrisked();
 			break;
 	  }			  
   }
@@ -154,20 +209,6 @@ crime?</p></div>
 			tempClass+=" White_Hispanic";
 		}
 	}
-		randomNumber=parseInt(Math.random()*5);
-		tempClass+=" ALL_BOROUGHS "+boroughs[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+usedForce[randomNumber];
-		randomNumber=parseInt(Math.random()*13);
-		tempClass+=" ALL_YEARS YEAR_"+(randomNumber+3);
-		  
-		  
-		svg1.append("circle").attr('class', tempClass).attr('cx', 1000).attr('cy', 1000).attr('r', 5).attr('fill', "steelblue").attr('opacity', 1).on("mouseover", function() {
-			this.className.baseVal+=" highlighted";
-									
-		}).on("mouseout", function() {
-				this.className.baseVal=this.className.baseVal.replace(" highlighted", "");
-		});
   }
   
   
@@ -208,11 +249,21 @@ crime?</p></div>
 		tempClass+=" ALL_GENDERS "+gender[randomNumber];
 		randomNumber=parseInt(Math.random()*2);
 		tempClass+=" "+usedForce[randomNumber];
+		randomNumber=parseInt(Math.random()*2);
+		tempClass+=" "+frisked[randomNumber];
+		randomNumber=parseInt(Math.random()*2);
+		tempClass+=" "+summons[randomNumber];
+		randomNumber=parseInt(Math.random()*2);
+		tempClass+=" "+arrests[randomNumber];
+		randomNumber=parseInt(Math.random()*2);
+		tempClass+=" "+contraband[randomNumber];
+		randomNumber=parseInt(Math.random()*2);
+		tempClass+=" "+weapon[randomNumber];
 		randomNumber=parseInt(Math.random()*13);
 		tempClass+=" ALL_YEARS YEAR_"+(randomNumber+3);
 		  
 		  
-		svg1.append("circle").attr('class', tempClass).attr('cx', 1000).attr('cy', 1000).attr('r', 5).attr('fill', "steelblue").attr('opacity', 1).on("mouseover", function() {
+		svg1.append("circle").attr('class', tempClass).attr('cx', 1000).attr('cy', 1000).attr('r', 5).attr('fill', "#2850AD").attr('opacity', 1).on("mouseover", function() {
 			this.className.baseVal+=" highlighted";
 									
 		}).on("mouseout", function() {
@@ -262,12 +313,47 @@ crime?</p></div>
 			document.getElementById("yearSelect").style.display="initial"; 
 			showForce();
 			break;	
+		case "Frisked":
+			document.getElementById("boroughSelect").style.display="initial"; 
+			document.getElementById("genderSelect").style.display="initial"; 
+			document.getElementById("raceSelect").style.display="initial"; 
+			document.getElementById("yearSelect").style.display="initial"; 
+			showFrisked();
+			break;	
 		case "Year":
 			document.getElementById("boroughSelect").style.display="initial"; 
 			document.getElementById("genderSelect").style.display="initial"; 
 			document.getElementById("raceSelect").style.display="initial"; 
 			document.getElementById("yearSelect").style.display="none"; 
 			showYear();
+			break;	
+		case "Summons":
+			document.getElementById("boroughSelect").style.display="initial"; 
+			document.getElementById("genderSelect").style.display="initial"; 
+			document.getElementById("raceSelect").style.display="initial"; 
+			document.getElementById("yearSelect").style.display="initial"; 
+			showSummons();
+			break;	
+		case "Contraband":
+			document.getElementById("boroughSelect").style.display="initial"; 
+			document.getElementById("genderSelect").style.display="initial"; 
+			document.getElementById("raceSelect").style.display="initial"; 
+			document.getElementById("yearSelect").style.display="initial"; 
+			showContraband();
+			break;	
+		case "Weapons":
+			document.getElementById("boroughSelect").style.display="initial"; 
+			document.getElementById("genderSelect").style.display="initial"; 
+			document.getElementById("raceSelect").style.display="initial"; 
+			document.getElementById("yearSelect").style.display="initial"; 
+			showWeapons();
+			break;	
+		case "Arrests":
+			document.getElementById("boroughSelect").style.display="initial"; 
+			document.getElementById("genderSelect").style.display="initial"; 
+			document.getElementById("raceSelect").style.display="initial"; 
+			document.getElementById("yearSelect").style.display="initial"; 
+			showArrests();
 			break;	
 		default:
 			document.getElementById("boroughSelect").style.display="none"; 
@@ -524,7 +610,7 @@ crime?</p></div>
   {
 	  currentView="Force";
 	  svg1.selectAll('.labels').each(function(d,i) {
-			if(i==4)
+			if(i==6)
 			{
 			  d3.select(this).transition()
 			  	.delay(10*i)
@@ -533,7 +619,7 @@ crime?</p></div>
 				.attr("y", 75)
 				.text("Force Used");	
 			}
-			else if(i==5)
+			else if(i==7)
 			{
 			  d3.select(this).transition()
 			  	.delay(10*i)
@@ -595,4 +681,380 @@ crime?</p></div>
 			}
 		});
   }
+  function showSummons()
+  {
+	  currentView="Summons";
+	  svg1.selectAll('.labels').each(function(d,i) {
+			if(i==3)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 250)
+				.attr("y", 75)
+				.text("Summons Issued");	
+			}
+			else if(i==9)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 650)
+				.attr("y", 75)
+				.text("Summons Not Issued");	
+			}
+			else
+			{	d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 1000)
+				.attr("y", 1000);	
+			}
+		});
+	  	  
+	    var x=0;
+	  	svg1.selectAll('.Summons').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);	
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+	  	svg1.selectAll('.NonSummons').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()			  	.delay(10*i)
+.duration(500)
+				.attr("cx", 500+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+  }
+  function showArrests()
+  {
+	  currentView="Arrests";
+	  svg1.selectAll('.labels').each(function(d,i) {
+			if(i==6)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 250)
+				.attr("y", 75)
+				.text("Arrested");	
+			}
+			else if(i==11)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 650)
+				.attr("y", 75)
+				.text("Not Arrested");	
+			}
+			else
+			{	d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 1000)
+				.attr("y", 1000);	
+			}
+		});
+	  	  
+	    var x=0;
+	  	svg1.selectAll('.Arrested').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);	
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+	  	svg1.selectAll('.NonArrested').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()			  	.delay(10*i)
+.duration(500)
+				.attr("cx", 500+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+  }
+  function showWeapons()
+  {
+	  currentView="Weapons";
+	  svg1.selectAll('.labels').each(function(d,i) {
+			if(i==10)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 250)
+				.attr("y", 75)
+				.text("Weapons Found");	
+			}
+			else if(i==2)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 650)
+				.attr("y", 75)
+				.text("No Weapons Found");	
+			}
+			else
+			{	d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 1000)
+				.attr("y", 1000);	
+			}
+		});
+	  	  
+	    var x=0;
+	  	svg1.selectAll('.Weapons').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);	
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+	  	svg1.selectAll('.NonWeapons').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()			  	.delay(10*i)
+.duration(500)
+				.attr("cx", 500+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+  }
+  function showContraband()
+  {
+	  currentView="Contraband";
+	  svg1.selectAll('.labels').each(function(d,i) {
+			if(i==10)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 250)
+				.attr("y", 75)
+				.text("Contraband Found");	
+			}
+			else if(i==2)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 650)
+				.attr("y", 75)
+				.text("No Contraband Found");	
+			}
+			else
+			{	d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 1000)
+				.attr("y", 1000);	
+			}
+		});
+	  	  
+	    var x=0;
+	  	svg1.selectAll('.Contraband').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);	
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+	  	svg1.selectAll('.NonContraband').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()			  	.delay(10*i)
+.duration(500)
+				.attr("cx", 500+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+  }
+  function showFrisked()
+  {
+	  currentView="Frisked";
+	  svg1.selectAll('.labels').each(function(d,i) {
+			if(i==5)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 250)
+				.attr("y", 75)
+				.text("Frisked");	
+			}
+			else if(i==6)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 650)
+				.attr("y", 75)
+				.text("Not Frisked");	
+			}
+			else
+			{	d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 1000)
+				.attr("y", 1000);	
+			}
+		});
+	  	  
+	    var x=0;
+	  	svg1.selectAll('.Frisked').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);	
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+	  	svg1.selectAll('.NonFrisked').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+			  d3.select(this).transition()			  	.delay(10*i)
+.duration(500)
+				.attr("cx", 500+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+  }
+  setInterval(changeTicker, 5000);
 </script>
