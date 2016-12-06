@@ -1,5 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-
+<script src="d3.min.js" charset="utf-8"></script>
 <style>
 body {
 	font-family: Helvetica;
@@ -22,11 +21,11 @@ a:hover{
 </style>
 
 <body>
-<div style="position: fixed; background-color: #000; color: #FFF; font-size: 36px; font-weight: 500; text-align: left; left:0px; top:0px; padding-left: 50px; padding-top: 20px; width: 100vw; height:50px;"><span>Welcome to New York</span><span style="padding-left: 400px; font-size:16px"><strong>Activity</strong></span><span style="padding-left: 50px; font-size:16px"><strong>About</strong></span></div>
-<span id="ticker" style="position:fixed; cursor:pointer; left:0px; top:70px; height: 25px; width:100vw; right:0px; margin:auto"><a onclick="currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=4; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();">Were black males frisked often in Manhattan in 2009?</a></span><br>
+<div style="position: fixed; background-color: #000; color: #FFF; font-size: 36px; font-weight: bold; text-align: left; left:0px; top:0px; padding-left: 50px; padding-top: 20px; width: 100vw; height:50px;"><span>Welcome to New York</span><span style="padding-left: 400px; font-size:16px"><strong>Activity</strong></span><span style="padding-left: 50px; font-size:16px"><strong>About</strong></span></div>
+<span id="ticker" style="position:fixed; cursor:pointer; left:0px; top:70px; height: 25px; padding-top:5px; background-color: #FFF; width:100vw; right:0px; margin:auto"><a onClick="currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=4; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();">Were black males frisked often in Manhattan in 2009?</a></span><br>
 <br>
 <br>
-<div align='right'><p align='right' style='width:700px; margin-right: 100px; display:none'>Having lived in New Jersey my entire life, I live about 20 minutes away from New
+<div id="about" align='right' style='display:none'><p align='right' style='width:700px; margin-right: 100px;'>Having lived in New Jersey my entire life, I live about 20 minutes away from New
 York City. I've been aware of "Stop and Frisk" since I can remember, but have yet to be on the receiving end. Recently, Stop and Frisk has found
 its way back into public discussion due to the Presidential debates and it's a highly
 controversial and sensitive subject. It was referred to as something that was no
@@ -47,19 +46,19 @@ may not be as effective as people would assume.</p></div><br>
 <option value="Queens">Queens</option>
 </select><select id="yearSelect" onChange="changeOptions();">
 <option value="ALL_YEARS" selected>All</option>
-<option value="YEAR_3">2003</option>
-<option value="YEAR_4">2004</option>
-<option value="YEAR_5">2005</option>
-<option value="YEAR_6">2006</option>
-<option value="YEAR_7">2007</option>
-<option value="YEAR_8">2008</option>
-<option value="YEAR_9">2009</option>
-<option value="YEAR_10">2010</option>
-<option value="YEAR_11">2011</option>
-<option value="YEAR_12">2012</option>
-<option value="YEAR_13">2013</option>
-<option value="YEAR_14">2014</option>
-<option value="YEAR_15">2015</option>
+<option value="YEAR_2003">2003</option>
+<option value="YEAR_2004">2004</option>
+<option value="YEAR_2005">2005</option>
+<option value="YEAR_2006">2006</option>
+<option value="YEAR_2007">2007</option>
+<option value="YEAR_2008">2008</option>
+<option value="YEAR_2009">2009</option>
+<option value="YEAR_2010">2010</option>
+<option value="YEAR_2011">2011</option>
+<option value="YEAR_2012">2012</option>
+<option value="YEAR_2013">2013</option>
+<option value="YEAR_2014">2014</option>
+<option value="YEAR_2015">2015</option>
 </select><select id="genderSelect" onChange="changeOptions();">
 <option value="ALL_GENDERS" selected>All</option>
 <option value="Male">Male</option>
@@ -68,15 +67,22 @@ may not be as effective as people would assume.</p></div><br>
 <option value="ALL_RACES" selected>All</option>
 <option value="Asian">Asian</option>
 <option value="Black">Black</option>
-<option value="Black_Hispanic">Black Hispanic</option>
-<option value="White_Hispanic">White Hispanic</option>
+<option value="B_Hispanic">Black Hispanic</option>
+<option value="W_Hispanic">White Hispanic</option>
+<option value="Indian">American Indian</option>
 <option value="White">White</option>
 </select>
-<div style="width:1100px">
+<div id="activity" style="width:1200px">
+    <div style="float:left; width: 50px; margin-top:100px; text-align: left; padding-left: 20px">
+    <img src="a.png"><br><br><br><br><br>
+    <img src="b.png"><br>
+    <br>
+    </div>
     <div style="float:left; width: 280px; margin-top:100px; text-align: left; padding-left: 20px">
     <a style="cursor:pointer" onClick="showView('Gender');">Stops by Gender</a><br>
+    <a style="cursor:pointer" onClick="showView('Borough');">Stops by Borough</a><br>
     <a style="cursor:pointer" onClick="showView('Race');">Stops by Race</a><br>
-    <a style="cursor:pointer" onClick="showView('Year');">Stops by Year</a><br><br>
+    <a style="cursor:pointer" onClick="showView('Year');">Stops by Year</a><br><br><br><br>
     <a style="cursor:pointer" onClick="showView('Frisked');">Were they frisked?</a><br>
     <a style="cursor:pointer" onClick="showView('Force');">Was force used?</a><br>
     <a style="cursor:pointer" onClick="showView('Arrests');">Was an arrest made?</a><br>
@@ -88,23 +94,33 @@ may not be as effective as people would assume.</p></div><br>
 <svg style="float:left" id="svg1" width="800" height="1000"></svg>
 </div>
 
+<span id="unitLabel" style="position:fixed; cursor:pointer; left:0px; bottom:0px; height: 25px; padding-top:5px; background-color: #FFF; width:100vw; right:0px; margin:auto">Each circle represents 10,000 people.</span>
 </body>
 
 <script>
+function swapDivs(divName)
+{
+  $( "#about" ).slideDown( "slow", function() {
+    // Animation complete.
+  });
+}
+  var nodeLimit=10000;
   var currentBorough="ALL_BOROUGHS";
   var currentYear="ALL_YEARS";
   var currentRace="ALL_RACES";
   var currentGender="ALL_GENDERS";
   var currentView = "Gender";
   var boroughs=["Queens", "Brooklyn", "Bronx", "Manhattan", "SI"];
-  var races=["Black", "White", "Black_Hispanic", "White_Hispanic", "Asian"];
+  var races=["Asian", "Black", "B_Hispanic", "W_Hispanic", "Indian", "White"];
+  var raceLabels=["White", "Black", "Asian", "Black Hispanic", "White Hispanic", "American Indian"];
+  var boroughLabels=["Brooklyn", "The Bronx", "Manhattan", "Staten Island", "Queens"];
   var gender=["Male", "Female"];
-  var usedForce=["Force", "NonForce"];
-  var frisked=["Frisked", "NonFrisked"];
-  var summons=["Summons", "NonSummons"];
-  var arrests=["Arrested", "NonArrested"];
-  var contraband=["Contraband", "NonContraband"]
-  var weapon=["Weapons", "NonWeapons"];
+  var usedForce=["NonForce", "Force"];
+  var frisked=["NonFrisked", "Frisked"];
+  var summons=["NonSummons", "Summons"];
+  var arrests=["NonArrested", "Arrested"];
+  var contraband=["NonContraband", "Contraband"]
+  var weapon=["NonWeapons", "Weapons"];
   var dataPoint=[];
   var width=500;
   var height=400;
@@ -112,7 +128,6 @@ may not be as effective as people would assume.</p></div><br>
   var div1 = d3.select("body").append("div")	
   .attr("class", "tooltip")				
   .style("opacity", 0);  
-  var x=0, maleCount=0, femaleCount=0, blackMaleCount=0, whiteMaleCount=0, asianMaleCount=0, whiteHispanicMaleCount=0, blackHispanicMaleCount=0, blackFemaleCount=0, whiteFemaleCount=0, asianFemaleCount=0, whiteHispanicFemaleCount=0, blackHispanicFemaleCount=0;
   var tickerCount=0;
   function changeTicker()
   {
@@ -135,12 +150,41 @@ may not be as effective as people would assume.</p></div><br>
 			break;	
 	}
   }
+  function calculateLimit()
+  {
+	  var selectionLength=document.getElementsByClassName(currentYear + " " + currentGender + " " + currentRace + " " + currentBorough).length;
+	  console.log(currentYear + " " + currentGender + " " + currentRace + " " + currentBorough);
+	  console.log(selectionLength + " records");
+	  if(selectionLength>=1000000)
+	  {
+		  nodeLimit=10000;
+	  }
+	  else if(selectionLength>=100000)
+	  {
+		  nodeLimit=1000;
+	  }
+	  else if(selectionLength>=10000)
+	  {
+		  nodeLimit=100;
+	  }
+	  else if(selectionLength>=500)
+	  {
+		  nodeLimit=10;
+	  }
+	  else
+	  {
+		  nodeLimit=1;  
+	  }
+	  document.getElementById("unitLabel").innerHTML="Each circle represents " + nodeLimit + ((nodeLimit==1)?" person":" people");	
+  }
   function changeOptions()
   {
 	  currentBorough=document.getElementById("boroughSelect").value;
 	  currentYear=document.getElementById("yearSelect").value;
 	  currentRace=document.getElementById("raceSelect").value;
 	  currentGender=document.getElementById("genderSelect").value;
+	  calculateLimit();
+	  
 	  switch(currentView)
 	  {
 		  case "Gender":
@@ -149,6 +193,10 @@ may not be as effective as people would assume.</p></div><br>
 
 		  case "Race":
 		  	showRace();
+			break;
+
+		  case "Borough":
+		  	showBorough();
 			break;
 
 		  case "Force":
@@ -164,7 +212,7 @@ may not be as effective as people would assume.</p></div><br>
 			break;
 
 		  case "Weapons":
-		  	showSummons();
+		  	showWeapons();
 			break;
 
 		  case "Contraband":
@@ -176,109 +224,27 @@ may not be as effective as people would assume.</p></div><br>
 			break;
 	  }			  
   }
-  function parseLine(data)
-  {
-	var tempClass="";
-	tempClass="";
-	tempClass=" ALL_RACES ALL_GENDERS ";
-	if(data['sex']=="M")
-	{
-		tempClass+=" Male";
-	}
-	else if(data['sex']=="F")
-	{
-		tempClass+=" Female";
-		if(data['race']=="B")
-		{
-			tempClass+=" Black";
-		}
-		else if(data['race']=="W")
-		{
-			tempClass+=" White";
-		}
-		else if(data['race']=="A")
-		{
-			tempClass+=" Asian";
-		}
-		else if(data['race']=="P")
-		{
-			tempClass+=" Black_Hispanic";
-		}
-		else if(data['race']=="Q")
-		{
-			tempClass+=" White_Hispanic";
-		}
-	}
-  }
-  
-  
   visualize();
-  /*d3.csv('2003.csv', function(err, d) {	
-  d.forEach(function (data, i)
-  {
-	  x++;
-	  parseLine(data);
-  });
-  console.log("M:" + maleCount);
-  console.log("F:" + femaleCount);
-  console.log("BM:" + blackMaleCount);
-  console.log("WM:" + whiteMaleCount);
-  console.log("AM:" + asianMaleCount);
-  console.log("BHM:" + blackHispanicMaleCount);
-  console.log("WHM:" + whiteHispanicMaleCount);
-  console.log("BF:" + blackFemaleCount);
-  console.log("WF:" + whiteFemaleCount);
-  console.log("AF:" + asianFemaleCount);
-  console.log("BHF:" + blackHispanicFemaleCount);
-  console.log("WHF:" + whiteHispanicFemaleCount);
-  visualize();
-  });*/
   
   function visualize()
   {
-		var tempClass="";
-		var randomNumber=0;
-	  for(var i=0; i<1000; i++)
+	  var x=0;
+	  d3.csv('formattedReport.csv', function(err, d) {	
+	  d.forEach(function (data, i)
 	  {
-		tempClass="";
-		randomNumber=parseInt(Math.random()*5);
-		tempClass=" ALL_RACES " + races[randomNumber];
-		randomNumber=parseInt(Math.random()*5);
-		tempClass+=" ALL_BOROUGHS "+boroughs[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" ALL_GENDERS "+gender[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+usedForce[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+frisked[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+summons[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+arrests[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+contraband[randomNumber];
-		randomNumber=parseInt(Math.random()*2);
-		tempClass+=" "+weapon[randomNumber];
-		randomNumber=parseInt(Math.random()*13);
-		tempClass+=" ALL_YEARS YEAR_"+(randomNumber+3);
-		  
-		  
-		svg1.append("circle").attr('class', tempClass).attr('cx', 1000).attr('cy', 1000).attr('r', 5).attr('fill', "#2850AD").attr('opacity', 1).on("mouseover", function() {
-			this.className.baseVal+=" highlighted";
-									
-		}).on("mouseout", function() {
-				this.className.baseVal=this.className.baseVal.replace(" highlighted", "");
-		});
-  		//svg1.append("text").attr('class', 'count').attr("x", 0)
-        //.attr("y", 45)
-		//.attr("transform", "rotate(270, 200, 200)")
-        //.text("White");
-	  }
+			  x++;
+			  var tempClass="ALL_BOROUGHS ALL_YEARS ALL_RACES ALL_GENDERS YEAR_"+data['year']+" "+gender[data['sex']]+" "+races[data['race']]+" "+data['borough']+" "+frisked[data['frisked']]+" "+arrests[data['arrest']]+" "+usedForce[data['force']]+" "+summons[data['summons']]+" "+contraband[data['contraband']]+" "+weapon[data['weapons']] + " DELEGATE_"+data['numberOfEach'];
+			  svg1.append("circle").attr('class', tempClass).attr('cx', 2000).attr('cy', 2000).attr('r', 5).attr('fill', "#2850AD").attr('opacity', 1);	 
+	  });
+	  console.log(x + " logs");
 	  for(var i=0;i<13; i++)
 	  {
 		  svg1.append("text").attr('class', 'labels').attr("x", 1000).attr("y", 1000).attr("text-anchor", "middle").text("20"+(i>6?"":"0")+(3+i));
 	  }
-	  showView("Gender");
+  	  showView("Gender");
+	  });
+	  
+
   }
   function showView(view)
   {
@@ -290,6 +256,7 @@ may not be as effective as people would assume.</p></div><br>
 	  document.getElementById("genderSelect").options.selectedIndex=0;
 	  document.getElementById("raceSelect").options.selectedIndex=0;
 	  document.getElementById("yearSelect").options.selectedIndex=0;
+	  calculateLimit();
 	switch(view)
 	{
 		case "Gender":
@@ -305,6 +272,13 @@ may not be as effective as people would assume.</p></div><br>
 			document.getElementById("raceSelect").style.display="none"; 
 			document.getElementById("yearSelect").style.display="initial"; 
 			showRace();
+			break;	
+		case "Borough":
+			document.getElementById("boroughSelect").style.display="none"; 
+			document.getElementById("genderSelect").style.display="initial"; 
+			document.getElementById("raceSelect").style.display="initial"; 
+			document.getElementById("yearSelect").style.display="initial"; 
+			showBorough();
 			break;	
 		case "Force":
 			document.getElementById("boroughSelect").style.display="initial"; 
@@ -395,20 +369,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Male').each(function(d,i) {			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 {
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
 			  d3.select(this).transition()			  	
-				.delay(10*i)
+				.delay(10*x)
 				.duration(500)
 				.attr("cx", 100+((x%20)*15))
 				.attr("cy", 100+(parseInt((x/20))*15))
 				.attr("opacity", 1.0);
-				x++;	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -416,20 +405,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		var x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.Female').each(function(d,i) {			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 {
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
 			  d3.select(this).transition()			  	
-			    .delay(10*i)
+			    .delay(10*x)
 			  	.duration(500)
 				.attr("cx", 500+((x%20)*15))
 				.attr("cy", 100+(parseInt((x/20))*15))
 				.attr("opacity", 1.0);	
-				x++;		
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -437,10 +441,10 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
   }
-
-  function showRace()
+  function showBorough()
   {
-	  currentView="Race";
+	  currentView="Borough";
+	  var nodeCount=-1;
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i<5)
 			{
@@ -448,8 +452,8 @@ may not be as effective as people would assume.</p></div><br>
 			  	.delay(10*i)
 				.duration(500)
 				.attr("x", 165+((i%3)*200))
-				.attr("y", 75+(parseInt((i/3))*400))
-				.text(races[i]);	
+				.attr("y", 75+(parseInt((i/3))*200))
+				.text(boroughLabels[i]);	
 			}
 			else
 			{	d3.select(this).transition()
@@ -461,21 +465,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
-	  	svg1.selectAll('.White').each(function(d,i) {
+		nodeCount=-1;
+	  	svg1.selectAll('.Brooklyn').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 100+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
-				x++;
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -483,20 +502,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
-	  	svg1.selectAll('.Black').each(function(d,i) {
+		nodeCount=-1;
+	  	svg1.selectAll('.Bronx').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
 .duration(500)
 				.attr("cx", 300+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);
-				x++;
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -504,20 +538,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
-	  	svg1.selectAll('.Asian').each(function(d,i) {
+		nodeCount=-1;
+	  	svg1.selectAll('.Manhattan').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
 .duration(500)
 				.attr("cx", 500+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
-				x++;		   
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -525,20 +574,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
-	  	svg1.selectAll('.Black_Hispanic').each(function(d,i) {			
+		nodeCount=-1;
+	  	svg1.selectAll('.SI').each(function(d,i) {			
 		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 		{	
-			  d3.select(this).transition()			  	.delay(10*i)
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
 .duration(500)
 				.attr("cx", 100+((x%10)*15))
-				.attr("cy", 500+(parseInt((x/10))*15))
+				.attr("cy", 300+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);
-				x++;			   
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -546,20 +610,276 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
-	  	svg1.selectAll('.White_Hispanic').each(function(d,i) {	
+		nodeCount=-1;
+	  	svg1.selectAll('.Queens').each(function(d,i) {	
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
 .duration(500)
 				.attr("cx", 300+((x%10)*15))
-				.attr("cy", 500+(parseInt((x/10))*15))
+				.attr("cy", 300+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
-				x++;		   
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+  }
+  function showRace()
+  {
+	  currentView="Race";
+	  var nodeCount=-1;
+	  svg1.selectAll('.labels').each(function(d,i) {
+			if(i<6)
+			{
+			  d3.select(this).transition()
 			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*200))
+				.text(raceLabels[i]);	
+			}
+			else
+			{	d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 1000)
+				.attr("y", 1000);	
+			}
+		});
+	  	  
+	    var x=0;
+		nodeCount=-1;
+	  	svg1.selectAll('.White').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 100+((x%10)*15))
+				.attr("cy", 100+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+		nodeCount=-1;
+	  	svg1.selectAll('.Black').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
+.duration(500)
+				.attr("cx", 300+((x%10)*15))
+				.attr("cy", 100+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+		nodeCount=-1;
+	  	svg1.selectAll('.Asian').each(function(d,i) {
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
+.duration(500)
+				.attr("cx", 500+((x%10)*15))
+				.attr("cy", 100+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+		nodeCount=-1;
+	  	svg1.selectAll('.B_Hispanic').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+		{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
+.duration(500)
+				.attr("cx", 100+((x%10)*15))
+				.attr("cy", 300+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+		nodeCount=-1;
+	  	svg1.selectAll('.W_Hispanic').each(function(d,i) {	
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
+.duration(500)
+				.attr("cx", 300+((x%10)*15))
+				.attr("cy", 300+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 1000)
+				.attr("cy", 1000)
+				.attr("opacity", 1.0);	
+			}
+		});
+		x=0;
+		nodeCount=-1;
+	  	svg1.selectAll('.Indian').each(function(d,i) {	
+			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{	
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+			  d3.select(this).transition()			  	.delay(10*x)
+.duration(500)
+				.attr("cx", 500+((x%10)*15))
+				.attr("cy", 300+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
+			}
+			else
+			{
+			  d3.select(this).transition()
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -580,24 +900,42 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var y=0;
+		var nodeCount=-1;
 		for(var j=0; j<13; j++)
 		{
 		x=0;
-	  	svg1.selectAll('.YEAR_'+(j+3)).each(function(d,i) {
+		
+	  	svg1.selectAll('.YEAR_'+(2000+j+3)).each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 50+(200*parseInt(j%4))+((x%10)*15))
-				.attr("cy", 100+(200*parseInt(j/4))+(parseInt((x/10))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()
+					.delay(10*y)
+					.duration(500)
+					.attr("cx", 50+(200*parseInt(j%4))+((x%10)*15))
+					.attr("cy", 100+(200*parseInt(j/4))+(parseInt((x/10))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					y++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*y)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*y)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -638,21 +976,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Force').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 100+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  	d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 100+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -660,20 +1013,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.NonForce').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
-.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()			  	.delay(10*x)
+	.duration(500)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -713,21 +1081,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Summons').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 100+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+					d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 100+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -735,20 +1118,36 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.NonSummons').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
-.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+					d3.select(this).transition()			  	
+				  	.delay(10*x)
+					.duration(500)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -788,21 +1187,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Arrested').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 100+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 100+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -810,20 +1224,36 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.NonArrested').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
-.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  	d3.select(this).transition()			  	
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -863,21 +1293,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Weapons').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 100+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 100+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -885,20 +1330,36 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.NonWeapons').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
-.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+					d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -938,21 +1399,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Contraband').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 100+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 100+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -960,20 +1436,35 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.NonContraband').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
-.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()			  	.delay(10*x)
+	.duration(500)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);	
+					nodeCount++;
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -1013,21 +1504,36 @@ may not be as effective as people would assume.</p></div><br>
 		});
 	  	  
 	    var x=0;
+		var nodeCount=-1;
 	  	svg1.selectAll('.Frisked').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()
-			  	.delay(10*i)
-				.duration(500)
-				.attr("cx", 100+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 100+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);	
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);
+					nodeCount++;	
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
@@ -1035,20 +1541,34 @@ may not be as effective as people would assume.</p></div><br>
 			}
 		});
 		x=0;
+		nodeCount=-1;
 	  	svg1.selectAll('.NonFrisked').each(function(d,i) {
 			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
 			{	
-			  d3.select(this).transition()			  	.delay(10*i)
-.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);
-				x++;
+				if(nodeCount>=nodeLimit || nodeCount==-1)
+				{
+				  d3.select(this).transition()			  	.delay(10*x)
+	.duration(500)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
+					.attr("opacity", 1.0);
+					x++;
+					nodeCount=1;
+				}
+				else
+				{
+				  d3.select(this).transition()
+					.delay(10*x)
+					.duration(500)
+					.attr("cx", 1000)
+					.attr("cy", 1000)
+					.attr("opacity", 1.0);
+				}
 			}
 			else
 			{
 			  d3.select(this).transition()
-			  	.delay(10*i)
+			  	.delay(10*x)
 				.duration(500)
 				.attr("cx", 1000)
 				.attr("cy", 1000)
