@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+<script src="d3.min.js" charset="utf-8"></script>
 <style>
 body {
 	font-family: Helvetica;
@@ -19,33 +19,47 @@ a:hover{
 	font-weight: bold;
 }
 </style>
+<head>
+<title>Welcome to New York - D3 Visualization on Stop and Frisk in NYC</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-79252263-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</head>
 <body>
-<div style="position: fixed; background-color: #000; color: #FFF; font-size: 36px; font-weight: bold; text-align: left; left:0px; top:0px; padding-left: 50px; padding-top: 20px; width: 100vw; height:50px;"><span>Welcome to New York</span><span style="padding-left: 400px; font-size:16px"><strong>Activity</strong></span><span style="padding-left: 50px; font-size:16px"><strong>About</strong></span></div>
-<span id="ticker" style="position:fixed; cursor:pointer; left:0px; top:70px; height: 25px; padding-top:5px; background-color: #FFF; width:100vw; right:0px; margin:auto"><a onClick="currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=4; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();">Were black males frisked often in Manhattan in 2009?</a></span><br>
+<div style="position: fixed; background-color: #000; color: #FFF; font-size: 36px; font-weight: bold; text-align: left; left:0px; top:0px; padding-left: 50px; padding-top: 20px; width: 100vw; height:50px;"><span>Welcome to New York</span><span style="padding-left: 400px; font-size:16px"><strong><a style="cursor:pointer" onclick='swapDivs("Activity");'>Activity</a></strong></span><span style="padding-left: 50px; font-size:16px"><strong><a style="cursor:pointer" onclick='swapDivs("About");'>About</a></strong></span></div>
+<span id="ticker" style="position:fixed; cursor:pointer; left:0px; top:70px; height: 25px; padding-top:5px; background-color: #FFF; width:100vw; right:0px; margin:auto"><a onClick="currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=3; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();">Were black males frisked often in Manhattan in 2009?</a></span><br>
 <br>
 <br>
-<div id="about" align='right' style='display:none'><p align='right' style='width:700px; margin-right: 100px;'>Having lived in New Jersey my entire life, I live about 20 minutes away from New
-York City. I've been aware of "Stop and Frisk" since I can remember, but have yet to be on the receiving end. Recently, Stop and Frisk has found
+<div id="about" align='right' style='display:none'><img src="nyc.png" style="margin-top:100px; margin-right:50px"><p style='margin-top:200px; width:700px; margin-right: 100px; float:right'>Recently, Stop and Frisk has found
 its way back into public discussion due to the Presidential debates and it's a highly
 controversial and sensitive subject. It was referred to as something that was no
 longer in effect, which is not true. The subsequent discussion thereafter
 demonstrated how most people are unaware of whether or not stop and frisk is
 actually effective, what this practice yielded, and exactly how this activity ran and
 still continues to run on a micro-scale even now.<br><br>The goal of this project is to highlight who is being targeted and shed light into what is resulting from an ideology that may or
-may not be as effective as people would assume.</p></div><br>
+may not be as effective as people would assume. The data for this visualization has been filtered to remove any logs that include an unknown race or sex. All labelings and identifications of race, sex, and other information comes directly from the source file itself. Source: <a href="http://www.nyc.gov/html/nypd/html/analysis_and_planning/stop_question_and_frisk_report.shtml">Stop, Question, and Frisk Database</a>.<br><br>
+<br>
+This visualization was developed by <a href="http://www.danmanzo.com">Dan Manzo</a></p></div><br>
 <br>
 <br>
 <br>
+<div id="activity" style="width:1200px">
 <select id="boroughSelect" onChange="changeOptions();">
-<option value="ALL_BOROUGHS" selected>All</option>
+<option value="ALL_BOROUGHS" selected>All Boroughs</option>
 <option value="Brooklyn">Brooklyn</option>
 <option value="Bronx">The Bronx</option>
 <option value="Manhattan">Manhattan</option>
 <option value="SI">Staten Island</option>
 <option value="Queens">Queens</option>
 </select><select id="yearSelect" onChange="changeOptions();">
-<option value="ALL_YEARS" selected>All</option>
+<option value="ALL_YEARS" selected>All Years</option>
 <option value="YEAR_2003">2003</option>
 <option value="YEAR_2004">2004</option>
 <option value="YEAR_2005">2005</option>
@@ -60,11 +74,11 @@ may not be as effective as people would assume.</p></div><br>
 <option value="YEAR_2014">2014</option>
 <option value="YEAR_2015">2015</option>
 </select><select id="genderSelect" onChange="changeOptions();">
-<option value="ALL_GENDERS" selected>All</option>
+<option value="ALL_GENDERS" selected>All Genders</option>
 <option value="Male">Male</option>
 <option value="Female">Female</option>
 </select><select id="raceSelect" onChange="changeOptions();">
-<option value="ALL_RACES" selected>All</option>
+<option value="ALL_RACES" selected>All Races</option>
 <option value="Asian">Asian</option>
 <option value="Black">Black</option>
 <option value="B_Hispanic">Black Hispanic</option>
@@ -72,7 +86,6 @@ may not be as effective as people would assume.</p></div><br>
 <option value="Indian">American Indian</option>
 <option value="White">White</option>
 </select>
-<div id="activity" style="width:1200px">
     <div style="float:left; width: 50px; margin-top:100px; text-align: left; padding-left: 20px">
     <img src="a.png"><br><br><br><br><br>
     <img src="b.png"><br>
@@ -89,7 +102,7 @@ may not be as effective as people would assume.</p></div><br>
     <a style="cursor:pointer" onClick="showView('Summons');">Was a summons  issued?</a><br>
     <a style="cursor:pointer" onClick="showView('Contraband');">Was contraband found?</a><br>
     <a style="cursor:pointer" onClick="showView('Weapons');">Was a weapon found?</a>
-    <br>
+    <br><br><br><font color="#666"><h4><a style="text-decoration:none" href="https://en.wikipedia.org/wiki/American_Community_Survey">NYC Demographics</a></h4>White - 44.6%<br>Black - 25.1%<br>Hispanic - 27.5%<br>Asian - 11.8%<br>American Indian - 0.4%</font>
     </div>
 <svg style="float:left" id="svg1" width="800" height="1000"></svg>
 </div>
@@ -100,10 +113,22 @@ may not be as effective as people would assume.</p></div><br>
 <script>
 function swapDivs(divName)
 {
-  $( "#about" ).slideDown( "slow", function() {
-    // Animation complete.
-  });
+	if(divName=="Activity")
+	{
+		document.getElementById("activity").style.display="block";
+		document.getElementById("ticker").style.display="block";
+		document.getElementById("unitLabel").style.display="block";
+		document.getElementById("about").style.display="none";
+	}
+	else
+	{
+		document.getElementById("ticker").style.display="none";
+		document.getElementById("activity").style.display="none";
+		document.getElementById("unitLabel").style.display="none";
+		document.getElementById("about").style.display="block";
+	}
 }
+  var currentCount=0;
   var nodeLimit=10000;
   var currentBorough="ALL_BOROUGHS";
   var currentYear="ALL_YEARS";
@@ -132,16 +157,20 @@ function swapDivs(divName)
   function changeTicker()
   {
 	tickerCount++;
-	if(tickerCount>1)
+	if(tickerCount>2)
 	tickerCount=0;
 	switch(tickerCount)
 	{
 		case 0:
-			document.getElementById("ticker").innerHTML="<a onclick=\"currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=4; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();\">Were black males frisked often in Manhattan in 2009?</a>";
+			document.getElementById("ticker").innerHTML="<a onclick=\"currentView='Frisked'; document.getElementById('boroughSelect').selectedIndex=3; document.getElementById('yearSelect').selectedIndex=7; document.getElementById('genderSelect').selectedIndex=1; document.getElementById('raceSelect').selectedIndex=2; changeOptions();\">Were black males frisked often in Manhattan in 2009?</a>";
 			break;
 			
 		case 1:
 			document.getElementById("ticker").innerHTML="<a onclick=\"currentView='Force'; document.getElementById('boroughSelect').selectedIndex=5; document.getElementById('yearSelect').selectedIndex=0; document.getElementById('genderSelect').selectedIndex=2; document.getElementById('raceSelect').selectedIndex=1; changeOptions();\">Was force used more often than not for Asian females in Queens?</a>";
+			break;
+			
+		case 2:
+			document.getElementById("ticker").innerHTML="<a onclick=\"currentView='Year'; document.getElementById('boroughSelect').selectedIndex=0; document.getElementById('yearSelect').selectedIndex=0; document.getElementById('genderSelect').selectedIndex=0; document.getElementById('raceSelect').selectedIndex=0; changeOptions();\">Did frisking decrease under the Obama administration?</a>";
 			break;
 			
 		default:
@@ -150,20 +179,22 @@ function swapDivs(divName)
 			break;	
 	}
   }
-  function calculateLimit()
+  function calculateDelegates(className)
   {
-	  var selectionLength=document.getElementsByClassName(currentYear + " " + currentGender + " " + currentRace + " " + currentBorough).length;
-	  console.log(currentYear + " " + currentGender + " " + currentRace + " " + currentBorough);
-	  console.log(selectionLength + " records");
+	  var tempName=className.substr((className.indexOf("DELEGATES_")+10));
+	  return parseInt(tempName);
+  }
+  function calculateLimit(selectionLength)
+  {
 	  if(selectionLength>=1000000)
 	  {
 		  nodeLimit=10000;
 	  }
-	  else if(selectionLength>=100000)
+	  else if(selectionLength>=70000)
 	  {
 		  nodeLimit=1000;
 	  }
-	  else if(selectionLength>=10000)
+	  else if(selectionLength>=7000)
 	  {
 		  nodeLimit=100;
 	  }
@@ -175,7 +206,7 @@ function swapDivs(divName)
 	  {
 		  nodeLimit=1;  
 	  }
-	  document.getElementById("unitLabel").innerHTML="Each circle represents " + nodeLimit + ((nodeLimit==1)?" person":" people");	
+	  document.getElementById("unitLabel").innerHTML="Each circle represents " + nodeLimit.toLocaleString() + ((nodeLimit==1)?" person":" people");	
   }
   function changeOptions()
   {
@@ -233,10 +264,13 @@ function swapDivs(divName)
 	  d.forEach(function (data, i)
 	  {
 			  x++;
-			  var tempClass="ALL_BOROUGHS ALL_YEARS ALL_RACES ALL_GENDERS YEAR_"+data['year']+" "+gender[data['sex']]+" "+races[data['race']]+" "+data['borough']+" "+frisked[data['frisked']]+" "+arrests[data['arrest']]+" "+usedForce[data['force']]+" "+summons[data['summons']]+" "+contraband[data['contraband']]+" "+weapon[data['weapons']] + " DELEGATE_"+data['numberOfEach'];
-			  svg1.append("circle").attr('class', tempClass).attr('cx', 2000).attr('cy', 2000).attr('r', 5).attr('fill', "#2850AD").attr('opacity', 1);	 
+			  var tempClass="DATA ALL_BOROUGHS ALL_YEARS ALL_RACES ALL_GENDERS YEAR_"+data['year']+" "+gender[data['sex']]+" "+races[data['race']]+" "+data['borough']+" "+frisked[data['frisked']]+" "+arrests[data['arrest']]+" "+usedForce[data['force']]+" "+summons[data['summons']]+" "+contraband[data['contraband']]+" "+weapon[data['weapons']] + " DELEGATES_"+data['numberOfEach'];
+			  svg1.append("circle").attr('class', tempClass).attr('cx', 2000).attr('cy', 2000).attr('r', 1).attr('fill', "#2850AD").attr('opacity', 0);	 
 	  });
-	  console.log(x + " logs");
+	  for(var i=0;i<1000; i++)
+	  {
+			  svg1.append("circle").attr('class', 'node').attr('cx', 2000).attr('cy', 2000).attr('r', 5).attr('fill', "#2850AD").attr('opacity', 1);	 
+	  }
 	  for(var i=0;i<13; i++)
 	  {
 		  svg1.append("text").attr('class', 'labels').attr("x", 1000).attr("y", 1000).attr("text-anchor", "middle").text("20"+(i>6?"":"0")+(3+i));
@@ -338,9 +372,39 @@ function swapDivs(divName)
 			break;	
 	}
   }
+  function resetNodes()
+  {
+		svg1.selectAll('.node').each(function(d,i) {
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.duration(500)
+				.attr("cx", 1500)
+				.attr("cy", 1500)
+				.attr("opacity", 1.0);
+		});
+  }
   function showGender()
   {
+	  resetNodes();
 	  currentView="Gender";
+		currentCount=0;	
+		var maleCount=0;
+		var femaleCount=0;
+	  	svg1.selectAll('.Male').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  maleCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Female').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  femaleCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+		calculateLimit(currentCount);
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==4)
 			{
@@ -349,7 +413,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Male");	
+				.text("Male " + " ("+maleCount.toLocaleString()+")");		
 			}
 			else if(i==5)
 			{
@@ -358,7 +422,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("Female");	
+				.text("Female " + " ("+femaleCount.toLocaleString()+")");		
 			}
 			else
 			{	d3.select(this).transition()
@@ -368,92 +432,144 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Male').each(function(d,i) {			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-{
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	
+		maleCount=Math.ceil(maleCount/nodeLimit);
+		femaleCount=Math.ceil(femaleCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<maleCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node Male")
 				.delay(10*x)
 				.duration(500)
 				.attr("cx", 100+((x%20)*15))
 				.attr("cy", 100+(parseInt((x/20))*15))
 				.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
+				x++;
+		}
+		});
+		x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>maleCount)
+		{
+			if(i<=maleCount+femaleCount)
+			{
+					d3.select(this).transition()			  	
+					.attr("class", "node Female")
 					.delay(10*x)
 					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
 					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
-		});
-		var x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Female').each(function(d,i) {			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-{
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	
-			    .delay(10*x)
-			  	.duration(500)
-				.attr("cx", 500+((x%20)*15))
-				.attr("cy", 100+(parseInt((x/20))*15))
-				.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
+					d3.select(this).transition()			  	
+					.delay(10*i)
 					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
+
   }
   function showBorough()
   {
+	  resetNodes();
 	  currentView="Borough";
 	  var nodeCount=-1;
+		
+		var brooklynCount=0;
+		var bronxCount=0;
+		var manhattanCount=0;
+		var queensCount=0;
+		var siCount=0;
+		currentCount=0;
+	  	svg1.selectAll('.Brooklyn').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  brooklynCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Bronx').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  bronxCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Manhattan').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  manhattanCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Queens').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  queensCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.SI').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  siCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+		
 	  svg1.selectAll('.labels').each(function(d,i) {
-			if(i<5)
+			if(i==0)
 			{
 			  d3.select(this).transition()
 			  	.delay(10*i)
 				.duration(500)
 				.attr("x", 165+((i%3)*200))
-				.attr("y", 75+(parseInt((i/3))*200))
-				.text(boroughLabels[i]);	
+				.attr("y", 75+(parseInt((i/3))*400))
+				.text(boroughLabels[i] + " ("+brooklynCount.toLocaleString()+")");	
+			}
+			else if(i==1)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*400))
+				.text(boroughLabels[i] + " ("+bronxCount.toLocaleString()+")");	
+			}
+			else if(i==2)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*400))
+				.text(boroughLabels[i] + " ("+manhattanCount.toLocaleString()+")");	
+			}
+			else if(i==3)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*400))
+				.text(boroughLabels[i] + " ("+siCount.toLocaleString()+")");	
+			}
+			else if(i==4)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*400))
+				.text(boroughLabels[i] + " ("+queensCount.toLocaleString()+")");	
 			}
 			else
 			{	d3.select(this).transition()
@@ -463,14 +579,19 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Brooklyn').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
+		
+		calculateLimit(currentCount);
+		brooklynCount=Math.ceil(brooklynCount/nodeLimit);
+		bronxCount=Math.ceil(bronxCount/nodeLimit);
+		manhattanCount=Math.ceil(manhattanCount/nodeLimit);
+		queensCount=Math.ceil(queensCount/nodeLimit);
+		siCount=Math.ceil(siCount/nodeLimit);
+		
+		
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<brooklynCount)
+		{
 			  d3.select(this).transition()
 			  	.delay(10*x)
 				.duration(500)
@@ -478,187 +599,190 @@ function swapDivs(divName)
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
 					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Bronx').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>brooklynCount)
+		{
+			if(i<=brooklynCount+bronxCount)
+			{
+			  	d3.select(this).transition()			  	
+			  	.delay(10*x)
+				.duration(500)
 				.attr("cx", 300+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				x++;
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Manhattan').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>brooklynCount+bronxCount)
+		{
+			if(i<=brooklynCount+bronxCount+manhattanCount)
+			{
+			  	d3.select(this).transition()			  	
+			  	.delay(10*x)
+			 	.duration(500)
 				.attr("cx", 500+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				x++;
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.SI').each(function(d,i) {			
-		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-		{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
-				.attr("cx", 100+((x%10)*15))
-				.attr("cy", 300+(parseInt((x/10))*15))
-				.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>brooklynCount+bronxCount+manhattanCount)
+		{
+			if(i<=brooklynCount+bronxCount+manhattanCount+queensCount)
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
+				d3.select(this).transition()			  	
+				.delay(10*x)
 				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
-		});
-		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Queens').each(function(d,i) {	
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
 				.attr("cx", 300+((x%10)*15))
-				.attr("cy", 300+(parseInt((x/10))*15))
+				.attr("cy", 500+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				x++;
+			}
+		}
+		});
+		x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>brooklynCount+bronxCount+manhattanCount+queensCount)
+		{
+			if(i<=brooklynCount+bronxCount+manhattanCount+queensCount+siCount)
+			{
+			 	 d3.select(this).transition()			  	
+			  	.delay(10*x)
+				.duration(500)
+				.attr("cx", 100+((x%10)*15))
+				.attr("cy", 500+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);
+				x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(x*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showRace()
   {
+	  resetNodes();
 	  currentView="Race";
 	  var nodeCount=-1;
+		var whiteCount=0;
+		var blackCount=0;
+		var bHispanicCount=0;
+		var wHispanicCount=0;
+		var asianCount=0;
+		var indianCount=0;
+		currentCount=0;
+	  	svg1.selectAll('.White').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  whiteCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Black').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  blackCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.B_Hispanic').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  bHispanicCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.W_Hispanic').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  wHispanicCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Asian').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  asianCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.Indian').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  indianCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
 	  svg1.selectAll('.labels').each(function(d,i) {
-			if(i<6)
+			if(i==0)
 			{
 			  d3.select(this).transition()
 			  	.delay(10*i)
 				.duration(500)
 				.attr("x", 165+((i%3)*200))
-				.attr("y", 75+(parseInt((i/3))*200))
-				.text(raceLabels[i]);	
+				.attr("y", 75+(parseInt((i/3))*500))
+				.text(raceLabels[i] + " ("+whiteCount.toLocaleString()+")");	
+			}
+			else if(i==1)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*500))
+				.text(raceLabels[i] + " ("+blackCount.toLocaleString()+")");	
+			}
+			else if(i==2)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*500))
+				.text(raceLabels[i] + " ("+asianCount.toLocaleString()+")");	
+			}
+			else if(i==3)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*500))
+				.text(raceLabels[i] + " ("+bHispanicCount.toLocaleString()+")");	
+			}
+			else if(i==4)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*500))
+				.text(raceLabels[i] + " ("+wHispanicCount.toLocaleString()+")");	
+			}
+			else if(i==5)
+			{
+			  d3.select(this).transition()
+			  	.delay(10*i)
+				.duration(500)
+				.attr("x", 165+((i%3)*200))
+				.attr("y", 75+(parseInt((i/3))*500))
+				.text(raceLabels[i] + " ("+indianCount.toLocaleString()+")");	
 			}
 			else
 			{	d3.select(this).transition()
@@ -669,13 +793,18 @@ function swapDivs(divName)
 			}
 		});
 	  	  
-	    var x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.White').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
+		calculateLimit(currentCount);
+		blackCount=Math.ceil(blackCount/nodeLimit);
+		whiteCount=Math.ceil(whiteCount/nodeLimit);
+		asianCount=Math.ceil(asianCount/nodeLimit);
+		indianCount=Math.ceil(indianCount/nodeLimit);
+		bHispanicCount=Math.ceil(bHispanicCount/nodeLimit);
+		wHispanicCount=Math.ceil(wHispanicCount/nodeLimit);
+		
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<whiteCount)
+		{
 			  d3.select(this).transition()
 			  	.delay(10*x)
 				.duration(500)
@@ -683,270 +812,184 @@ function swapDivs(divName)
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
 					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Black').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>whiteCount)
+		{
+			if(i<=whiteCount+blackCount)
+			{
+			  	d3.select(this).transition()			  	
+			  	.delay(10*x)
+				.duration(500)
 				.attr("cx", 300+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				x++;
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Asian').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>whiteCount+blackCount)
+		{
+			if(i<=whiteCount+blackCount+asianCount)
+			{
+			  	d3.select(this).transition()			  	
+			  	.delay(10*x)
+			 	.duration(500)
 				.attr("cx", 500+((x%10)*15))
 				.attr("cy", 100+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				x++;
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.B_Hispanic').each(function(d,i) {			
-		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-		{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>whiteCount+blackCount+asianCount)
+		{
+			if(i<=whiteCount+blackCount+asianCount+bHispanicCount)
+			{
+				d3.select(this).transition()			  	
+				.delay(10*x)
+				.duration(500)
 				.attr("cx", 100+((x%10)*15))
-				.attr("cy", 300+(parseInt((x/10))*15))
-				.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
+				.attr("cy", 600+(parseInt((x/10))*15))
 				.attr("opacity", 1.0);	
+				x++;
 			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.W_Hispanic').each(function(d,i) {	
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>whiteCount+blackCount+asianCount+bHispanicCount)
+		{
+			if(i<=whiteCount+blackCount+asianCount+bHispanicCount+wHispanicCount)
+			{
+			 	 d3.select(this).transition()			  	
+			  	.delay(10*x)
+				.duration(500)
 				.attr("cx", 300+((x%10)*15))
-				.attr("cy", 300+(parseInt((x/10))*15))
-				.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				.attr("cy", 600+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);
+				x++;
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.Indian').each(function(d,i) {	
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-			  d3.select(this).transition()			  	.delay(10*x)
-.duration(500)
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>whiteCount+blackCount+asianCount+bHispanicCount+wHispanicCount)
+		{
+			if(i<=whiteCount+blackCount+asianCount+bHispanicCount+wHispanicCount+indianCount)
+			{
+			 	 d3.select(this).transition()			  	
+			  	.delay(10*x)
+				.duration(500)
 				.attr("cx", 500+((x%10)*15))
-				.attr("cy", 300+(parseInt((x/10))*15))
-				.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+				.attr("cy", 600+(parseInt((x/10))*15))
+				.attr("opacity", 1.0);
+				x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(x*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showYear()
   {
+	  resetNodes();
+	  currentCount=0;
 	  currentView="Year";
+	  	  
+	    var x=0;
+		var yearCount=[];
+		for(var j=0; j<13; j++)
+		{
+			yearCount[j]=0;
+			svg1.selectAll('.YEAR_'+(2000+j+3)).each(function(d,i) 
+			{
+				if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+				{	
+				  yearCount[j]+=calculateDelegates(this.className.baseVal);
+				  currentCount+=calculateDelegates(this.className.baseVal);
+				}
+			});
+		}
 	  svg1.selectAll('.labels').each(function(d,i) {
 			  d3.select(this).transition()
 			  	.delay(10*i)
 				.duration(500)
 				.attr("x", 120+((i%4)*200))
 				.attr("y", 80+(parseInt((i/4))*200))
-				.text("20"+(i>6?"":"0")+(3+i));	
+				.text("20"+(i>6?"":"0")+(3+i) + " ("+yearCount[i].toLocaleString()+")");	
 		});
-	  	  
-	    var x=0;
-		var y=0;
-		var nodeCount=-1;
+		calculateLimit(currentCount);
+		var forCount=0;
 		for(var j=0; j<13; j++)
 		{
-		x=0;
-		
-	  	svg1.selectAll('.YEAR_'+(2000+j+3)).each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
+			x=0;
+
+			svg1.selectAll('.node').each(function(d,i) {
+			if(i>forCount)
+			{
+				if(i<=forCount+Math.ceil(yearCount[j]/nodeLimit))
 				{
-				  d3.select(this).transition()
-					.delay(10*y)
+					d3.select(this).transition()
+					.attr("class", "node YEAR_"+j)
+					.delay(10*x)
 					.duration(500)
 					.attr("cx", 50+(200*parseInt(j%4))+((x%10)*15))
 					.attr("cy", 100+(200*parseInt(j/4))+(parseInt((x/10))*15))
 					.attr("opacity", 1.0);	
 					x++;
-					y++;
-					nodeCount=1;
 				}
-				else
+				else if(j==12)
 				{
-				  d3.select(this).transition()
-					.delay(10*y)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
+						d3.select(this).transition()			  	
+						.delay(10*i)
+						.duration(500)
+						.attr("cx", 2000)
+						.attr("cy", 2000)
+						.attr("opacity", 1.0);
 				}
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*y)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
-		});
-  	}
+			});
+			yearCount[j]=Math.ceil(yearCount[j]/nodeLimit);
+			forCount+=yearCount[j];
+		}
   }
   function showForce()
   {
 	  currentView="Force";
+	  	  
+	    resetNodes();
+		currentCount=0;	
+		var firstCount=0;
+		var secondCount=0;
+	  	svg1.selectAll('.Force').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  firstCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.NonForce').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  secondCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+		calculateLimit(currentCount);
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==6)
 			{
@@ -955,7 +998,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Force Used");	
+				.text("Force Used " + "("+firstCount.toLocaleString()+")");	
 			}
 			else if(i==7)
 			{
@@ -964,7 +1007,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("Force Not Used");	
+				.text("Force Not Used " + "("+secondCount.toLocaleString()+")");		
 			}
 			else
 			{	d3.select(this).transition()
@@ -974,84 +1017,72 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Force').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  	d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 100+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
+		firstCount=Math.ceil(firstCount/nodeLimit);
+		secondCount=Math.ceil(secondCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<firstCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.delay(10*x)
 				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.NonForce').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()			  	.delay(10*x)
-	.duration(500)
-					.attr("cx", 500+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>firstCount)
+		{
+			if(i<firstCount+secondCount)
+			{
+					d3.select(this).transition()			  	
+					.attr("class", "node")
 					.delay(10*x)
 					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
 					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(10*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showSummons()
   {
-	  currentView="Summons";
+	  currentView="Summons";	  	  
+	    resetNodes();
+		currentCount=0;	
+		var firstCount=0;
+		var secondCount=0;
+	  	svg1.selectAll('.Summons').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  firstCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.NonSummons').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  secondCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+		calculateLimit(currentCount);
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==3)
 			{
@@ -1060,7 +1091,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Summons Issued");	
+				.text("Summons Issued " + "("+firstCount.toLocaleString()+")");		
 			}
 			else if(i==9)
 			{
@@ -1069,7 +1100,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("Summons Not Issued");	
+				.text("Summons Not Issued " + "("+secondCount.toLocaleString()+")");		
 			}
 			else
 			{	d3.select(this).transition()
@@ -1079,85 +1110,73 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Summons').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-					d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 100+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
+		firstCount=Math.ceil(firstCount/nodeLimit);
+		secondCount=Math.ceil(secondCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<firstCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.delay(10*x)
 				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.NonSummons').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>firstCount)
+		{
+			if(i<firstCount+secondCount)
+			{
 					d3.select(this).transition()			  	
-				  	.delay(10*x)
+					.attr("class", "node")
+					.delay(10*x)
 					.duration(500)
 					.attr("cx", 500+((x%20)*15))
 					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
 					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(10*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showArrests()
   {
 	  currentView="Arrests";
+	  	  
+	    resetNodes();
+		currentCount=0;	
+		var firstCount=0;
+		var secondCount=0;
+	  	svg1.selectAll('.Arrested').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  firstCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.NonArrested').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  secondCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+		calculateLimit(currentCount);
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==6)
 			{
@@ -1166,7 +1185,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Arrested");	
+				.text("Arrested " + "("+firstCount.toLocaleString()+")");		
 			}
 			else if(i==11)
 			{
@@ -1175,7 +1194,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("Not Arrested");	
+				.text("Not Arrested " + "("+secondCount.toLocaleString()+")");		
 			}
 			else
 			{	d3.select(this).transition()
@@ -1185,85 +1204,72 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Arrested').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 100+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
+		firstCount=Math.ceil(firstCount/nodeLimit);
+		secondCount=Math.ceil(secondCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<firstCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.delay(10*x)
 				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.NonArrested').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  	d3.select(this).transition()			  	
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>firstCount)
+		{
+			if(i<firstCount+secondCount)
+			{
+					d3.select(this).transition()			  	
+					.attr("class", "node")
 					.delay(10*x)
 					.duration(500)
 					.attr("cx", 500+((x%20)*15))
 					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
 					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(10*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showWeapons()
   {
 	  currentView="Weapons";
+	  	  
+	    resetNodes();
+		currentCount=0;	
+		var firstCount=0;
+		var secondCount=0;
+	  	svg1.selectAll('.Weapons').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  firstCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.NonWeapons').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  secondCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==10)
 			{
@@ -1272,7 +1278,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Weapons Found");	
+				.text("Weapons Found " + "("+firstCount.toLocaleString()+")");	
 			}
 			else if(i==2)
 			{
@@ -1281,7 +1287,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("No Weapons Found");	
+				.text("No Weapons Found " + "("+secondCount.toLocaleString()+")");	
 			}
 			else
 			{	d3.select(this).transition()
@@ -1291,85 +1297,73 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Weapons').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 100+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
+		calculateLimit(currentCount);
+		firstCount=Math.ceil(firstCount/nodeLimit);
+		secondCount=Math.ceil(secondCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<firstCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.delay(10*x)
 				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.NonWeapons').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-					d3.select(this).transition()
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>firstCount)
+		{
+			if(i<firstCount+secondCount)
+			{
+					d3.select(this).transition()			  	
+					.attr("class", "node")
 					.delay(10*x)
 					.duration(500)
 					.attr("cx", 500+((x%20)*15))
 					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
 					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(10*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showContraband()
   {
 	  currentView="Contraband";
+	  	  
+	    resetNodes();
+		currentCount=0;	
+		var firstCount=0;
+		var secondCount=0;
+	  	svg1.selectAll('.Contraband').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  firstCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.NonContraband').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  secondCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==10)
 			{
@@ -1378,7 +1372,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Contraband Found");	
+				.text("Contraband Found " + "("+firstCount.toLocaleString()+")");	
 			}
 			else if(i==2)
 			{
@@ -1387,7 +1381,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("No Contraband Found");	
+				.text("No Contraband Found " + "("+secondCount.toLocaleString()+")");
 			}
 			else
 			{	d3.select(this).transition()
@@ -1397,84 +1391,73 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Contraband').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 100+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);	
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
-			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
+		calculateLimit(currentCount);
+		firstCount=Math.ceil(firstCount/nodeLimit);
+		secondCount=Math.ceil(secondCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<firstCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.delay(10*x)
 				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+		}
 		});
 		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.NonContraband').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()			  	.delay(10*x)
-	.duration(500)
-					.attr("cx", 500+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>firstCount)
+		{
+			if(i<firstCount+secondCount)
+			{
+					d3.select(this).transition()			  	
+					.attr("class", "node")
 					.delay(10*x)
 					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
+					.attr("cx", 500+((x%20)*15))
+					.attr("cy", 100+(parseInt((x/20))*15))
 					.attr("opacity", 1.0);	
-					nodeCount++;
-				}
+					x++;
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
+					d3.select(this).transition()			  	
+					.delay(10*i)
+					.duration(500)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
+					.attr("opacity", 1.0);
 			}
+		}
 		});
   }
   function showFrisked()
   {
 	  currentView="Frisked";
+	  	  
+	    resetNodes();
+		currentCount=0;	
+		var firstCount=0;
+		var secondCount=0;
+	  	svg1.selectAll('.Frisked').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  firstCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
+	  	svg1.selectAll('.NonFrisked').each(function(d,i) {			
+		if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
+			{
+			  secondCount+=calculateDelegates(this.className.baseVal);
+			  currentCount+=calculateDelegates(this.className.baseVal);
+			}
+		});
 	  svg1.selectAll('.labels').each(function(d,i) {
 			if(i==5)
 			{
@@ -1483,7 +1466,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 250)
 				.attr("y", 75)
-				.text("Frisked");	
+				.text("Frisked " + "("+firstCount.toLocaleString()+")");
 			}
 			else if(i==6)
 			{
@@ -1492,7 +1475,7 @@ function swapDivs(divName)
 				.duration(500)
 				.attr("x", 650)
 				.attr("y", 75)
-				.text("Not Frisked");	
+				.text("Not Frisked " + "("+secondCount.toLocaleString()+")");
 			}
 			else
 			{	d3.select(this).transition()
@@ -1502,78 +1485,49 @@ function swapDivs(divName)
 				.attr("y", 1000);	
 			}
 		});
-	  	  
-	    var x=0;
-		var nodeCount=-1;
-	  	svg1.selectAll('.Frisked').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()
+		calculateLimit(currentCount);
+		firstCount=Math.ceil(firstCount/nodeLimit);
+		secondCount=Math.ceil(secondCount/nodeLimit);
+	
+		var x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+		if(i<firstCount)
+		{
+				d3.select(this).transition()			  	
+				.attr("class", "node")
+				.delay(10*x)
+				.duration(500)
+				.attr("cx", 100+((x%20)*15))
+				.attr("cy", 100+(parseInt((x/20))*15))
+				.attr("opacity", 1.0);
+				x++;
+		}
+		});
+		x=0;
+		svg1.selectAll('.node').each(function(d,i) {
+ 		if(i>firstCount)
+		{
+			if(i<firstCount+secondCount)
+			{
+					d3.select(this).transition()			  	
+					.attr("class", "node")
 					.delay(10*x)
 					.duration(500)
-					.attr("cx", 100+((x%20)*15))
+					.attr("cx", 500+((x%20)*15))
 					.attr("cy", 100+(parseInt((x/20))*15))
 					.attr("opacity", 1.0);	
 					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
-					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
-					.attr("opacity", 1.0);
-					nodeCount++;	
-				}
 			}
 			else
 			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
-		});
-		x=0;
-		nodeCount=-1;
-	  	svg1.selectAll('.NonFrisked').each(function(d,i) {
-			if(this.className.baseVal.indexOf(currentBorough)!=-1 && this.className.baseVal.indexOf(currentYear)!=-1 && this.className.baseVal.indexOf(currentRace)!=-1 && this.className.baseVal.indexOf(currentGender)!=-1)
-			{	
-				if(nodeCount>=nodeLimit || nodeCount==-1)
-				{
-				  d3.select(this).transition()			  	.delay(10*x)
-	.duration(500)
-					.attr("cx", 500+((x%20)*15))
-					.attr("cy", 100+(parseInt((x/20))*15))
-					.attr("opacity", 1.0);
-					x++;
-					nodeCount=1;
-				}
-				else
-				{
-				  d3.select(this).transition()
-					.delay(10*x)
+					d3.select(this).transition()			  	
+					.delay(10*i)
 					.duration(500)
-					.attr("cx", 1000)
-					.attr("cy", 1000)
+					.attr("cx", 2000)
+					.attr("cy", 2000)
 					.attr("opacity", 1.0);
-				}
 			}
-			else
-			{
-			  d3.select(this).transition()
-			  	.delay(10*x)
-				.duration(500)
-				.attr("cx", 1000)
-				.attr("cy", 1000)
-				.attr("opacity", 1.0);	
-			}
+		}
 		});
   }
   setInterval(changeTicker, 5000);
