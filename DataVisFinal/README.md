@@ -16,8 +16,8 @@ The goal of this project is to highlight who is being targeted and shed light in
 
 This visualization was developed by [Dan Manzo](http://www.danmanzo.com)
 
-[Final Project Video](https://www.youtube.com/embed/fwvWxEzOUOY)
-[Sketchbook](https://www.dvmanzo.github.io/DataVisFinal/Sketchbook.pdf)
+###[Final Project Video](https://www.youtube.com/embed/fwvWxEzOUOY)
+###[Sketchbook](https://dvmanzo.github.io/DataVisFinal/Sketchbook.pdf)
 
-[stopandfrisk.nyc](http://stopandfrisk.nyc)
+###[stopandfrisk.nyc](http://stopandfrisk.nyc)
 
